@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QUIETUS — VR Horror</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Courier+Prime:ital@0;1&family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --black:   #080808;
+      --deep:    #0d0d0f;
+      --surface: #131317;
+      --border:  #222228;
+      --muted:   #44444e;
+      --dim:     #888896;
+      --text:    #d8d8e0;
+      --bright:  #eeeef5;
+      --red:     #c0392b;
+      --red-dim: #7a1f16;
+      --red-glow:#ff4433;
+      --amber:   #c8941a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* ─── GRAIN OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── SCANLINES ─── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.15em;
+      color: var(--bright);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--bright); }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 3rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 50%, rgba(192,57,43,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(13,13,15,0.9) 0%, transparent 80%);
+    }
+
+    .hero-eyebrow {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 15vw, 13rem);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--bright);
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.35s forwards;
+    }
+
+    .hero-title .ghost {
+      -webkit-text-stroke: 1px var(--border);
+      color: transparent;
+      display: block;
+    }
+
+    .hero-title .solid {
+      display: block;
+      text-shadow: 0 0 80px rgba(192,57,43,0.3);
+    }
+
+    .hero-sub {
+      margin-top: 2.5rem;
+      max-width: 520px;
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--dim);
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.55s forwards;
+    }
+
+    .hero-tags {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.7s forwards;
+    }
+
+    .tag {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.8rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .tag.highlight {
+      border-color: var(--red-dim);
+      color: var(--red);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 3rem;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      opacity: 0;
+      animation: fadeUp 1s 1.2s forwards;
+    }
+
+    .hero-scroll::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    /* ─── SECTION COMMON ─── */
+    section {
+      padding: 7rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--red-dim);
+    }
+
+    h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 1;
+      letter-spacing: 0.03em;
+      color: var(--bright);
+      margin-bottom: 2.5rem;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ─── ABOUT ─── */
+    #about .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    #about p {
+      color: var(--dim);
+      font-size: 1.05rem;
+      margin-bottom: 1.2rem;
+    }
+
+    #about p strong {
+      color: var(--text);
+      font-style: italic;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .stat {
+      background: var(--deep);
+      padding: 1.75rem 1.5rem;
+    }
+
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      color: var(--bright);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-number span {
+      color: var(--red);
+    }
+
+    .stat-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ─── BREATH PIPELINE ─── */
+    #breath {
+      padding: 7rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pipeline {
+      margin-top: 3rem;
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+    }
+
+    .pipe-step {
+      flex: 1;
+      min-width: 160px;
+      background: var(--deep);
+      border: 1px solid var(--border);
+      padding: 1.75rem 1.25rem;
+      position: relative;
+      transition: border-color 0.25s;
+    }
+
+    .pipe-step:hover {
+      border-color: var(--red-dim);
+    }
+
+    .pipe-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1rem;
+      z-index: 2;
+      background: var(--black);
+      padding: 0 2px;
+    }
+
+    .pipe-index {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      color: var(--red);
+      margin-bottom: 0.75rem;
+    }
+
+    .pipe-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      color: var(--bright);
+      margin-bottom: 0.5rem;
+    }
+
+    .pipe-desc {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .pipeline-note {
+      margin-top: 2rem;
+      padding: 1.25rem 1.5rem;
+      border-left: 2px solid var(--red-dim);
+      background: var(--deep);
+    }
+
+    .pipeline-note p {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.72rem;
+      color: var(--dim);
+      line-height: 1.7;
+    }
+
+    .pipeline-note strong {
+      color: var(--text);
+    }
+
+    /* ─── SCREENSHOTS ─── */
+    #screenshots h2 { margin-bottom: 0.5rem; }
+
+    .screenshots-intro {
+      color: var(--dim);
+      font-style: italic;
+      margin-bottom: 3rem;
+      max-width: 600px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--border);
+    }
+
+    .gallery-item {
+      background: var(--surface);
+      aspect-ratio: 16/10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .gallery-item:first-child {
+      grid-column: span 2;
+      aspect-ratio: 2/1;
+    }
+
+    .gallery-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      background: var(--deep);
+      transition: background 0.3s;
+    }
+
+    .gallery-item:hover .gallery-placeholder {
+      background: var(--surface);
+    }
+
+    .gallery-placeholder-icon {
+      font-size: 1.5rem;
+      opacity: 0.15;
+    }
+
+    .gallery-placeholder-text {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+      padding: 0 1rem;
+    }
+
+    /* Replace the placeholder divs with actual <img> tags once you have screenshots:
+       <img src="screenshots/your-image.jpg" alt="Scene description" style="width:100%;height:100%;object-fit:cover;" /> */
+
+    /* ─── TECH ─── */
+    #tech .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5px;
+      background: var(--border);
+      margin-top: 1rem;
+    }
+
+    .tech-item {
+      background: var(--deep);
+      padding: 1.5rem;
+      transition: background 0.2s;
+    }
+
+    .tech-item:hover { background: var(--surface); }
+
+    .tech-category {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.5rem;
+    }
+
+    .tech-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.05em;
+      color: var(--bright);
+      margin-bottom: 0.3rem;
+    }
+
+    .tech-detail {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ─── TEAM ─── */
+    #team p {
+      color: var(--dim);
+      font-style: italic;
+      max-width: 640px;
+      margin-bottom: 2.5rem;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5px;
+      background: var(--border);
+    }
+
+    .team-member {
+      background: var(--deep);
+      padding: 1.5rem;
+    }
+
+    .member-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.05em;
+      color: var(--bright);
+      margin-bottom: 0.3rem;
+    }
+
+    .member-role {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ─── CTA ─── */
+    #cta {
+      padding: 7rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    #cta h2 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      margin-bottom: 0;
+      line-height: 0.9;
+    }
+
+    #cta h2 em {
+      font-style: normal;
+      -webkit-text-stroke: 1px var(--muted);
+      color: transparent;
+    }
+
+    .cta-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+
+    .cta-link {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transition: color 0.2s;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cta-link:hover { color: var(--bright); }
+
+    .cta-link::after {
+      content: '↗';
+      font-size: 0.9rem;
+    }
+
+    .cta-link.primary {
+      font-size: 0.75rem;
+      color: var(--red);
+      border-color: var(--red-dim);
+    }
+
+    .cta-link.primary:hover {
+      color: var(--red-glow);
+      text-shadow: 0 0 20px rgba(255,68,51,0.4);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 100%;
+    }
+
+    footer p {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── VIGNETTE PULSE ─── */
+    .vignette-ring {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 120px 40px rgba(192,57,43,0.0);
+      z-index: 9997;
+      transition: box-shadow 3s ease-in-out;
+    }
+
+    .vignette-ring.pulse {
+      box-shadow: inset 0 0 120px 40px rgba(192,57,43,0.06);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .nav-links { display: none; }
+      section, #breath, #cta { padding: 4rem 1.5rem; }
+      #hero { padding: 6rem 1.5rem 3rem; }
+      #about .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .gallery { grid-template-columns: 1fr; }
+      .gallery-item:first-child { grid-column: span 1; aspect-ratio: 16/10; }
+      .pipeline { flex-direction: column; }
+      .pipe-step:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -18px; transform: translateX(-50%); }
+      #cta { flex-direction: column; align-items: flex-start; }
+      .cta-links { align-items: flex-start; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="vignette-ring" id="vigRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">Quietus</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#breath">Technology</a></li>
+      <li><a href="#screenshots">Screens</a></li>
+      <li><a href="#tech">Stack</a></li>
+      <li><a href="#cta">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <header id="hero">
+    <div class="hero-bg"></div>
+    <p class="hero-eyebrow">// VR Horror — Meta Quest 3</p>
+    <h1 class="hero-title">
+      <span class="ghost">Don't</span>
+      <span class="solid">Breathe.</span>
+    </h1>
+    <p class="hero-sub">
+      A VR horror experience that listens. The monster doesn't see you —
+      it <em>hears</em> you. Hold your breath. Stay silent. Survive.
+    </p>
+    <div class="hero-tags">
+      <span class="tag highlight">Breath Detection ML</span>
+      <span class="tag">Meta Quest 3</span>
+      <span class="tag">Unity URP</span>
+      <span class="tag">LSTM Neural Net</span>
+      <span class="tag">Real-time Audio AI</span>
+    </div>
+    <p class="hero-scroll">Scroll to explore</p>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="section-label">01 — Overview</p>
+    <h2>The Premise</h2>
+    <div class="about-grid">
+      <div>
+        <p>
+          <strong>Quietus</strong> is a first-person VR horror game built for standalone Meta Quest 3.
+          The central mechanic is simple and deeply unsettling: the monster that hunts you
+          responds to the sound of your breathing — captured live from your headset microphone.
+        </p>
+        <p>
+          Panic, and your breath betrays you. The game's suspicion system drives post-processing
+          vignette effects that close in as the creature grows more aware. There is no hiding
+          from your own body.
+        </p>
+        <p>
+          Built by a small team using Unity's XR Interaction Toolkit with OpenXR, the project
+          features an entirely custom machine-learning breath detection pipeline trained on
+          real recorded data.
+        </p>
+      </div>
+      <div class="about-stats">
+        <div class="stat">
+          <div class="stat-number">95<span>%</span></div>
+          <div class="stat-label">Model accuracy</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">4</div>
+          <div class="stat-label">Classified states</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">RT</div>
+          <div class="stat-label">Real-time inference</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">Q<span>3</span></div>
+          <div class="stat-label">Standalone target</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- BREATH PIPELINE -->
+  <section id="breath">
+    <p class="section-label">02 — Core Technology</p>
+    <h2>The Breath Engine</h2>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-index">01</div>
+        <div class="pipe-name">Microphone Capture</div>
+        <div class="pipe-desc">Quest 3 onboard mic. Continuous streaming audio buffer sampled at runtime inside Unity.</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-index">02</div>
+        <div class="pipe-name">RMS Gate</div>
+        <div class="pipe-desc">Amplitude range filter. Loud signals (speech, knocks) bypass ML — handled by autocorrelation pitch detection instead.</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-index">03</div>
+        <div class="pipe-name">MFCC Extraction</div>
+        <div class="pipe-desc">Mel-Frequency Cepstral Coefficients extracted in C#, mirroring the Python training pipeline exactly to prevent feature mismatch.</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-index">04</div>
+        <div class="pipe-name">LSTM Inference</div>
+        <div class="pipe-desc">4-class LSTM model (inhale / exhale / silence / noise) exported to ONNX, running via Unity Sentis on-device.</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-index">05</div>
+        <div class="pipe-name">Suspicion System</div>
+        <div class="pipe-desc">Inhale detections above 0.95 confidence threshold drive the monster's suspicion level — feeding post-process vignette FX.</div>
+      </div>
+    </div>
+
+    <div class="pipeline-note reveal">
+      <p>
+        <strong>On training / inference parity:</strong> a custom <code>mfcc_mirror.py</code> tool was built
+        to exactly replicate the runtime C# MFCC extraction in Python during training.
+        Frame count mismatches (43 vs 47 frames) between librosa defaults and the Unity implementation
+        caused silent accuracy loss — this tool ensures the model sees identical features at runtime.
+        ONNX export uses <code>dynamo=False</code> with no dynamic axes — the settings required for Unity Sentis compatibility.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SCREENSHOTS -->
+  <section id="screenshots">
+    <p class="section-label">03 — Visuals</p>
+    <h2>In the Dark</h2>
+    <p class="screenshots-intro">
+      Replace the placeholders below with your own captures — drag your image files into the same
+      folder as this HTML and update the <code>src</code> attributes.
+    </p>
+
+    <div class="gallery">
+      <!-- WIDE HERO SHOT — replace with: <img src="screenshots/hero-shot.jpg" alt="..." style="width:100%;height:100%;object-fit:cover;"> -->
+      <div class="gallery-item">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">🎮</div>
+          <div class="gallery-placeholder-text">Wide atmospheric shot<br/>Recommend: candle-lit corridor or monster reveal</div>
+        </div>
+      </div>
+
+      <!-- SCREENSHOT 2 -->
+      <div class="gallery-item">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">🕯️</div>
+          <div class="gallery-placeholder-text">Lighting / atmosphere detail</div>
+        </div>
+      </div>
+
+      <!-- SCREENSHOT 3 -->
+      <div class="gallery-item">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">👁️</div>
+          <div class="gallery-placeholder-text">Monster or suspicion vignette FX</div>
+        </div>
+      </div>
+
+      <!-- SCREENSHOT 4 -->
+      <div class="gallery-item">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">🫁</div>
+          <div class="gallery-placeholder-text">Breath debug HUD or gameplay UI</div>
+        </div>
+      </div>
+
+      <!-- SCREENSHOT 5 -->
+      <div class="gallery-item">
+        <div class="gallery-placeholder">
+          <div class="gallery-placeholder-icon">🔦</div>
+          <div class="gallery-placeholder-text">Environmental exploration</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- TECH STACK -->
+  <section id="tech">
+    <p class="section-label">04 — Tech Stack</p>
+    <h2>Built With</h2>
+
+    <div class="tech-grid reveal">
+      <div class="tech-item">
+        <div class="tech-category">Engine</div>
+        <div class="tech-name">Unity URP</div>
+        <div class="tech-detail">Universal Render Pipeline. Additive scene loading with persistent CoreScene architecture.</div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-category">XR</div>
+        <div class="tech-name">XR Toolkit</div>
+        <div class="tech-detail">XR Interaction Toolkit with OpenXR. NearFarInteractor for grabbing and interaction.</div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-category">ML Runtime</div>
+        <div class="tech-name">Unity Sentis</div>
+        <div class="tech-detail">On-device ONNX inference via Unity's Sentis (formerly Barracuda/Inference Engine).</div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-category">ML Training</div>
+        <div class="tech-name">PyTorch + ONNX</div>
+        <div class="tech-detail">LSTM trained in Python with librosa for feature extraction, exported to ONNX with dynamo=False.</div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-category">Platform</div>
+        <div class="tech-name">Meta Quest 3</div>
+        <div class="tech-detail">Standalone Android build. Developed via Meta Horizon Link PC VR mode.</div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-category">Input</div>
+        <div class="tech-name">Input System</div>
+        <div class="tech-detail">Unity Input System with Input Actions assets. Meta Quest Touch controller profile via OpenXR.</div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-category">Architecture</div>
+        <div class="tech-name">GameEvents Bus</div>
+        <div class="tech-detail">Static event bus for cross-scene communication. Prefab ownership model for team Git workflow.</div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-category">Audio</div>
+        <div class="tech-name">LibriSpeech</div>
+        <div class="tech-detail">Training data includes custom breath recordings + LibriSpeech speech samples for noise class robustness.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- TEAM -->
+  <section id="team">
+    <p class="section-label">05 — Credits</p>
+    <h2>The Team</h2>
+    <p>
+      A collaborative student project. Update the names and roles below to match your actual team.
+    </p>
+    <div class="team-grid reveal">
+      <!-- Add / remove members as needed -->
+      <div class="team-member">
+        <div class="member-name">Your Name</div>
+        <div class="member-role">Lead Developer / ML Engineer</div>
+      </div>
+      <div class="team-member">
+        <div class="member-name">Team Member</div>
+        <div class="member-role">Role Here</div>
+      </div>
+      <div class="team-member">
+        <div class="member-name">Team Member</div>
+        <div class="member-role">Role Here</div>
+      </div>
+      <div class="team-member">
+        <div class="member-name">Team Member</div>
+        <div class="member-role">Role Here</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CTA -->
+  <div id="cta">
+    <h2>See It<br/><em>In Action</em></h2>
+    <div class="cta-links">
+      <!-- Update these hrefs -->
+      <a href="#" class="cta-link primary">Watch Gameplay Video</a>
+      <a href="https://github.com/YOUR_USERNAME/YOUR_REPO" class="cta-link" target="_blank">View on GitHub</a>
+      <a href="mailto:your@email.com" class="cta-link">Get in Touch</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 — Quietus VR Horror Team</p>
+    <p>Unity · Meta Quest 3 · LSTM · OpenXR</p>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Slow vignette pulse (ambient horror)
+    const vig = document.getElementById('vigRing');
+    let on = false;
+    setInterval(() => {
+      on = !on;
+      vig.classList.toggle('pulse', on);
+    }, 4000);
+  </script>
+</body>
+</html>
