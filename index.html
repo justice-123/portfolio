@@ -3,975 +3,1085 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project Asphyxia — VR Horror</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Courier+Prime:ital@0;1&family=Bebas+Neue&display=swap" rel="stylesheet" />
-
+  <title>Justice Mintah | XR, ML & Robotics Portfolio</title>
+  <meta name="description" content="Portfolio for Justice Mintah, BSc Computer Science student building Project Asphyxia, a Meta Quest 3 VR horror game, and a 3D-printed robotic pick-and-place arm." />
   <style>
     :root {
-      --black:   #080808;
-      --deep:    #0d0d0f;
-      --surface: #131317;
-      --border:  #222228;
-      --muted:   #44444e;
-      --dim:     #888896;
-      --text:    #d8d8e0;
-      --bright:  #eeeef5;
-      --red:     #c0392b;
-      --red-dim: #7a1f16;
-      --red-glow:#ff4433;
-      --amber:   #c8941a;
+      --bg: #050807;
+      --bg-soft: #0b120f;
+      --card: rgba(15, 28, 22, 0.78);
+      --card-strong: rgba(18, 39, 30, 0.95);
+      --line: rgba(126, 255, 171, 0.18);
+      --text: #eefcf4;
+      --muted: #a9bdb2;
+      --green: #68ff9c;
+      --green-2: #20d76b;
+      --cyan: #70f7ff;
+      --amber: #ffb86b;
+      --red: #ff6b7a;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
-      background: var(--black);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(32, 215, 107, 0.20), transparent 32%),
+        radial-gradient(circle at 85% 20%, rgba(112, 247, 255, 0.10), transparent 28%),
+        radial-gradient(circle at 50% 95%, rgba(255, 184, 107, 0.12), transparent 35%),
+        var(--bg);
       color: var(--text);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      line-height: 1.7;
       overflow-x: hidden;
-      cursor: crosshair;
     }
 
-    /* ─── GRAIN OVERLAY ─── */
-    body::before {
-      content: '';
+    #gas-canvas {
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-      opacity: 0.035;
-      pointer-events: none;
-      z-index: 9999;
+      z-index: -2;
+      opacity: 0.55;
     }
 
-    /* ─── SCANLINES ─── */
-    body::after {
-      content: '';
+    .noise {
       position: fixed;
       inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.08) 2px,
-        rgba(0,0,0,0.08) 4px
-      );
       pointer-events: none;
-      z-index: 9998;
+      opacity: 0.05;
+      z-index: -1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* ─── NAV ─── */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      padding: 1.5rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
-    }
-
-    .nav-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.4rem;
-      letter-spacing: 0.15em;
-      color: var(--bright);
+    a {
+      color: inherit;
       text-decoration: none;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 36px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: rgba(5, 8, 7, 0.72);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #041007;
+      background: linear-gradient(135deg, var(--green), var(--cyan));
+      box-shadow: 0 0 28px rgba(104, 255, 156, 0.35);
     }
 
     .nav-links {
       display: flex;
-      gap: 2.5rem;
-      list-style: none;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .nav-links a {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--dim);
-      text-decoration: none;
-      transition: color 0.2s;
+      color: var(--muted);
+      font-size: 0.92rem;
+      padding: 10px 12px;
+      border-radius: 999px;
+      transition: 160ms ease;
     }
 
-    .nav-links a:hover { color: var(--bright); }
-
-    /* ─── HERO ─── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 8rem 3rem 4rem;
-      position: relative;
-      overflow: hidden;
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(104, 255, 156, 0.09);
     }
 
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 70% 50%, rgba(192,57,43,0.07) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(13,13,15,0.9) 0%, transparent 80%);
+    .hero {
+      min-height: calc(100vh - 72px);
+      display: grid;
+      align-items: center;
+      padding: 84px 0 64px;
     }
 
-    .hero-eyebrow {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--red);
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.2s forwards;
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 34px;
+      align-items: center;
     }
 
-    .hero-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(5rem, 15vw, 13rem);
-      line-height: 0.9;
-      letter-spacing: -0.02em;
-      color: var(--bright);
-      position: relative;
-      z-index: 1;
-      opacity: 0;
-      animation: fadeUp 0.9s 0.35s forwards;
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--green);
+      border: 1px solid rgba(104, 255, 156, 0.25);
+      background: rgba(104, 255, 156, 0.06);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      margin-bottom: 22px;
     }
 
-    .hero-title .ghost {
-      -webkit-text-stroke: 1px var(--border);
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 16px var(--green);
+      animation: pulse 1.8s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.45); opacity: 1; }
+    }
+
+    h1 {
+      font-size: clamp(3.1rem, 8vw, 6.9rem);
+      line-height: 0.88;
+      letter-spacing: -0.085em;
+      margin-bottom: 24px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 0%, var(--green) 48%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
       color: transparent;
-      display: block;
     }
 
-    .hero-title .solid {
-      display: block;
-      text-shadow: 0 0 80px rgba(192,57,43,0.3);
-    }
-
-    .hero-sub {
-      margin-top: 2.5rem;
-      max-width: 520px;
-      font-size: 1.15rem;
-      font-style: italic;
-      color: var(--dim);
-      line-height: 1.8;
-      opacity: 0;
-      animation: fadeUp 0.9s 0.55s forwards;
-    }
-
-    .hero-tags {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-top: 2rem;
-      opacity: 0;
-      animation: fadeUp 0.9s 0.7s forwards;
-    }
-
-    .tag {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 0.35rem 0.8rem;
-      border: 1px solid var(--border);
+    .hero-copy {
       color: var(--muted);
-    }
-
-    .tag.highlight {
-      border-color: var(--red-dim);
-      color: var(--red);
-    }
-
-    .hero-scroll {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 3rem;
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      opacity: 0;
-      animation: fadeUp 1s 1.2s forwards;
-    }
-
-    .hero-scroll::before {
-      content: '';
-      display: block;
-      width: 40px;
-      height: 1px;
-      background: var(--muted);
-    }
-
-    /* ─── SECTION COMMON ─── */
-    section {
-      padding: 7rem 3rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--red);
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .section-label::after {
-      content: '';
-      flex: 1;
-      max-width: 60px;
-      height: 1px;
-      background: var(--red-dim);
-    }
-
-    h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2.5rem, 6vw, 5rem);
-      line-height: 1;
-      letter-spacing: 0.03em;
-      color: var(--bright);
-      margin-bottom: 2.5rem;
-    }
-
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--border);
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    /* ─── ABOUT ─── */
-    #about .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      align-items: start;
-    }
-
-    #about p {
-      color: var(--dim);
-      font-size: 1.05rem;
-      margin-bottom: 1.2rem;
-    }
-
-    #about p strong {
-      color: var(--text);
-      font-style: italic;
-    }
-
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .stat {
-      background: var(--deep);
-      padding: 1.75rem 1.5rem;
-    }
-
-    .stat-number {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.8rem;
-      color: var(--bright);
-      line-height: 1;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-number span {
-      color: var(--red);
-    }
-
-    .stat-label {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    /* ─── BREATH PIPELINE ─── */
-    #breath {
-      padding: 7rem 3rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .pipeline {
-      margin-top: 3rem;
-      display: flex;
-      align-items: stretch;
-      gap: 0;
-      overflow-x: auto;
-      padding-bottom: 1rem;
-    }
-
-    .pipe-step {
-      flex: 1;
-      min-width: 160px;
-      background: var(--deep);
-      border: 1px solid var(--border);
-      padding: 1.75rem 1.25rem;
-      position: relative;
-      transition: border-color 0.25s;
-    }
-
-    .pipe-step:hover {
-      border-color: var(--red-dim);
-    }
-
-    .pipe-step:not(:last-child)::after {
-      content: '→';
-      position: absolute;
-      right: -14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 1rem;
-      z-index: 2;
-      background: var(--black);
-      padding: 0 2px;
-    }
-
-    .pipe-index {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.2em;
-      color: var(--red);
-      margin-bottom: 0.75rem;
-    }
-
-    .pipe-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.1rem;
-      letter-spacing: 0.05em;
-      color: var(--bright);
-      margin-bottom: 0.5rem;
-    }
-
-    .pipe-desc {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.65rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .pipeline-note {
-      margin-top: 2rem;
-      padding: 1.25rem 1.5rem;
-      border-left: 2px solid var(--red-dim);
-      background: var(--deep);
-    }
-
-    .pipeline-note p {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.72rem;
-      color: var(--dim);
+      font-size: clamp(1.06rem, 1.6vw, 1.25rem);
       line-height: 1.7;
+      max-width: 720px;
     }
 
-    .pipeline-note strong {
+    .hero-copy strong {
       color: var(--text);
+      font-weight: 750;
     }
 
-    /* ─── SCREENSHOTS ─── */
-    #screenshots h2 { margin-bottom: 0.5rem; }
-
-    .screenshots-intro {
-      color: var(--dim);
-      font-style: italic;
-      margin-bottom: 3rem;
-      max-width: 600px;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5px;
-      background: var(--border);
-    }
-
-    .gallery-item {
-      background: var(--surface);
-      aspect-ratio: 16/10;
+    .hero-actions {
       display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+
+    .btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      position: relative;
-      overflow: hidden;
+      gap: 10px;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: 180ms ease;
       cursor: pointer;
     }
 
-    .gallery-item:first-child {
-      grid-column: span 2;
-      aspect-ratio: 2/1;
+    .btn-primary {
+      color: #031107;
+      background: linear-gradient(135deg, var(--green), var(--cyan));
+      box-shadow: 0 16px 42px rgba(32, 215, 107, 0.26);
     }
 
-    .gallery-placeholder {
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
+    .hero-panel {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(15, 32, 24, 0.92), rgba(7, 13, 10, 0.92));
+      box-shadow: var(--shadow);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: "";
       position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      background: var(--deep);
-      transition: background 0.3s;
+      inset: -2px;
+      background: radial-gradient(circle at 50% 0%, rgba(104, 255, 156, 0.24), transparent 46%);
+      pointer-events: none;
     }
 
-    .gallery-item:hover .gallery-placeholder {
-      background: var(--surface);
-    }
-
-    .gallery-placeholder-icon {
-      font-size: 1.5rem;
-      opacity: 0.15;
-    }
-
-    .gallery-placeholder-text {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-align: center;
-      padding: 0 1rem;
-    }
-
-    /* Replace the placeholder divs with actual <img> tags once you have screenshots:
-       <img src="screenshots/your-image.jpg" alt="Scene description" style="width:100%;height:100%;object-fit:cover;" /> */
-
-    /* ─── TECH ─── */
-    #tech .tech-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.5px;
-      background: var(--border);
-      margin-top: 1rem;
-    }
-
-    .tech-item {
-      background: var(--deep);
-      padding: 1.5rem;
-      transition: background 0.2s;
-    }
-
-    .tech-item:hover { background: var(--surface); }
-
-    .tech-category {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--red);
-      margin-bottom: 0.5rem;
-    }
-
-    .tech-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.3rem;
-      letter-spacing: 0.05em;
-      color: var(--bright);
-      margin-bottom: 0.3rem;
-    }
-
-    .tech-detail {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.62rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    /* ─── TEAM ─── */
-    #team p {
-      color: var(--dim);
-      font-style: italic;
-      max-width: 640px;
-      margin-bottom: 2.5rem;
-    }
-
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1.5px;
-      background: var(--border);
-    }
-
-    .team-member {
-      background: var(--deep);
-      padding: 1.5rem;
-    }
-
-    .member-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.3rem;
-      letter-spacing: 0.05em;
-      color: var(--bright);
-      margin-bottom: 0.3rem;
-    }
-
-    .member-role {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    /* ─── CTA ─── */
-    #cta {
-      padding: 7rem 3rem;
-      max-width: 1200px;
-      margin: 0 auto;
+    .panel-top {
+      position: relative;
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      gap: 3rem;
-      flex-wrap: wrap;
-    }
-
-    #cta h2 {
-      font-size: clamp(3rem, 8vw, 7rem);
-      margin-bottom: 0;
-      line-height: 0.9;
-    }
-
-    #cta h2 em {
-      font-style: normal;
-      -webkit-text-stroke: 1px var(--muted);
-      color: transparent;
-    }
-
-    .cta-links {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      align-items: flex-end;
-    }
-
-    .cta-link {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--dim);
-      text-decoration: none;
-      display: flex;
       align-items: center;
-      gap: 0.8rem;
-      transition: color 0.2s;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 0.84rem;
     }
 
-    .cta-link:hover { color: var(--bright); }
+    .status-pill {
+      color: var(--green);
+      border: 1px solid rgba(104, 255, 156, 0.22);
+      background: rgba(104, 255, 156, 0.07);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 800;
+    }
 
-    .cta-link::after {
-      content: '↗';
+    .terminal {
+      position: relative;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.42);
+      padding: 18px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      min-height: 330px;
+    }
+
+    .line {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      color: #dfffe9;
+      line-height: 1.5;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+    }
+
+    .line:last-child {
+      border-bottom: 0;
+    }
+
+    .prompt {
+      color: var(--green);
+      flex: 0 0 auto;
+    }
+
+    .terminal .dim {
+      color: #83a892;
+    }
+
+    .meters {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .meter label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      width: var(--w);
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--green), var(--cyan));
+      box-shadow: 0 0 18px rgba(104, 255, 156, 0.35);
+    }
+
+    main {
+      padding-bottom: 80px;
+    }
+
+    section {
+      padding: 86px 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 22px;
+      margin-bottom: 28px;
+    }
+
+    .section-kicker {
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-weight: 900;
+      font-size: 0.78rem;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      letter-spacing: -0.06em;
+      line-height: 0.98;
+    }
+
+    .section-note {
+      color: var(--muted);
+      max-width: 430px;
+      line-height: 1.65;
+    }
+
+    .project-card {
+      position: relative;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(14, 28, 22, 0.86), rgba(8, 14, 11, 0.92));
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 30px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .project-card::after {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      top: -220px;
+      right: -150px;
+      background: radial-gradient(circle, var(--glow), transparent 65%);
+      opacity: 0.32;
+      pointer-events: none;
+    }
+
+    .project-layout {
+      position: relative;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .project-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.055);
+      color: #d9f4e3;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    h3 {
+      font-size: clamp(1.7rem, 3.2vw, 3.1rem);
+      letter-spacing: -0.055em;
+      line-height: 1.02;
+      margin-bottom: 18px;
+    }
+
+    .project-copy {
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 1rem;
+    }
+
+    .project-copy strong {
+      color: var(--text);
+    }
+
+    .project-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .feature {
+      border: 1px solid rgba(255, 255, 255, 0.085);
+      background: rgba(255, 255, 255, 0.045);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+    }
+
+    .feature-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(104, 255, 156, 0.10);
+      border: 1px solid rgba(104, 255, 156, 0.16);
+      margin-bottom: 14px;
+    }
+
+    .feature h4 {
+      margin-bottom: 8px;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .feature p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.91rem;
+    }
+
+    .pipeline {
+      display: grid;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .pipe-step {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.18);
+      border-radius: 16px;
+    }
+
+    .pipe-num {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(135deg, rgba(104, 255, 156, 0.18), rgba(112, 247, 255, 0.12));
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .pipe-step p {
+      color: var(--muted);
+      line-height: 1.45;
       font-size: 0.9rem;
     }
 
-    .cta-link.primary {
-      font-size: 0.75rem;
-      color: var(--red);
-      border-color: var(--red-dim);
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 22px;
     }
 
-    .cta-link.primary:hover {
-      color: var(--red-glow);
-      text-shadow: 0 0 20px rgba(255,68,51,0.4);
+    .stat {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.04);
     }
 
-    /* ─── FOOTER ─── */
+    .stat strong {
+      display: block;
+      font-size: 1.7rem;
+      letter-spacing: -0.05em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .skill-card {
+      border: 1px solid var(--line);
+      background: rgba(15, 28, 22, 0.72);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      min-height: 210px;
+    }
+
+    .skill-card h3 {
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+
+    .skill-card ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.93rem;
+    }
+
+    .skill-card li::before {
+      content: "•";
+      color: var(--green);
+      margin-right: 8px;
+    }
+
+    .timeline {
+      border: 1px solid var(--line);
+      background: rgba(15, 28, 22, 0.72);
+      border-radius: var(--radius-xl);
+      padding: 26px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 20px;
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .timeline-item:last-child {
+      border-bottom: 0;
+    }
+
+    .time {
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .timeline-item h3 {
+      font-size: 1.25rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .timeline-item p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .contact-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      border: 1px solid rgba(104, 255, 156, 0.28);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(104, 255, 156, 0.17), transparent 35%),
+        linear-gradient(135deg, rgba(15, 28, 22, 0.96), rgba(4, 10, 7, 0.96));
+      border-radius: var(--radius-xl);
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .contact-card h2 {
+      margin-bottom: 14px;
+    }
+
+    .contact-card p {
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 710px;
+    }
+
     footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 3rem;
+      border-top: 1px solid var(--line);
+      padding: 26px 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-inner {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      max-width: 100%;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
-    footer p {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      color: var(--muted);
+    @media (max-width: 900px) {
+      .hero-grid,
+      .project-layout,
+      .contact-card {
+        grid-template-columns: 1fr;
+      }
+
+      .skills-grid,
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .section-heading {
+        display: block;
+      }
+
+      .section-note {
+        margin-top: 14px;
+      }
     }
 
-    /* ─── ANIMATIONS ─── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @media (max-width: 640px) {
+      .nav-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 16px 0;
+      }
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
+      .nav-links {
+        justify-content: flex-start;
+      }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+      .feature-grid,
+      .skills-grid,
+      .stats,
+      .timeline-item {
+        grid-template-columns: 1fr;
+      }
 
-    /* ─── VIGNETTE PULSE ─── */
-    .vignette-ring {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      box-shadow: inset 0 0 120px 40px rgba(192,57,43,0.0);
-      z-index: 9997;
-      transition: box-shadow 3s ease-in-out;
-    }
+      .hero {
+        padding-top: 52px;
+      }
 
-    .vignette-ring.pulse {
-      box-shadow: inset 0 0 120px 40px rgba(192,57,43,0.06);
-    }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 768px) {
-      nav { padding: 1.25rem 1.5rem; }
-      .nav-links { display: none; }
-      section, #breath, #cta { padding: 4rem 1.5rem; }
-      #hero { padding: 6rem 1.5rem 3rem; }
-      #about .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .gallery { grid-template-columns: 1fr; }
-      .gallery-item:first-child { grid-column: span 1; aspect-ratio: 16/10; }
-      .pipeline { flex-direction: column; }
-      .pipe-step:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -18px; transform: translateX(-50%); }
-      #cta { flex-direction: column; align-items: flex-start; }
-      .cta-links { align-items: flex-start; }
-      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+      .project-card,
+      .contact-card {
+        padding: 22px;
+      }
     }
   </style>
 </head>
 <body>
+  <canvas id="gas-canvas" aria-hidden="true"></canvas>
+  <div class="noise" aria-hidden="true"></div>
 
-  <div class="vignette-ring" id="vigRing"></div>
-
-  <!-- NAV -->
-  <nav>
-    <a href="#hero" class="nav-logo">Project Asphyxia</a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#breath">Technology</a></li>
-      <li><a href="#screenshots">Screens</a></li>
-      <li><a href="#tech">Stack</a></li>
-      <li><a href="#cta">Contact</a></li>
-    </ul>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#top" aria-label="Justice Mintah home">
+        <span class="brand-mark">JM</span>
+        <span>Justice Mintah</span>
+      </a>
+      <div class="nav-links" aria-label="Main navigation">
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#process">Process</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
   </nav>
 
-  <!-- HERO -->
-  <header id="hero">
-    <div class="hero-bg"></div>
-    <p class="hero-eyebrow">// VR Horror — Meta Quest 3</p>
-    <h1 class="hero-title">
-      <span class="ghost">Don't</span>
-      <span class="solid">Breathe.</span>
-    </h1>
-    <p class="hero-sub">
-      A VR horror experience that listens. The monster doesn't see you —
-      it <em>hears</em> you. Hold your breath. Stay silent. Survive.
-    </p>
-    <div class="hero-tags">
-      <span class="tag highlight">Breath Detection ML</span>
-      <span class="tag">Meta Quest 3</span>
-      <span class="tag">Unity URP</span>
-      <span class="tag">LSTM Neural Net</span>
-      <span class="tag">Real-time Audio AI</span>
+  <header class="hero" id="top">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow"><span class="pulse-dot"></span> XR · Machine Learning · Robotics</div>
+        <h1><span class="gradient-text">Building systems</span><br />that react to the real world.</h1>
+        <p class="hero-copy">
+          I’m <strong>Justice Mintah</strong>, a second-year BSc Computer Science student at the
+          <strong>University of Bristol</strong>. My work sits between software and hardware:
+          standalone VR on Meta Quest 3, real-time audio ML, Unity systems, Arduino firmware,
+          inverse kinematics, and physical prototyping.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#projects">View featured projects</a>
+          <a class="btn btn-secondary" href="#contact">Get in touch</a>
+        </div>
+      </div>
+
+      <aside class="hero-panel" aria-label="Technical summary panel">
+        <div class="panel-top">
+          <span>Live build profile</span>
+          <span class="status-pill">Portfolio</span>
+        </div>
+        <div class="terminal">
+          <div class="line"><span class="prompt">$</span><span>focus --roles <span class="dim">ML Engineer / XR Developer / Robotics Builder</span></span></div>
+          <div class="line"><span class="prompt">$</span><span>project_asphyxia --target <span class="dim">Meta Quest 3 standalone</span></span></div>
+          <div class="line"><span class="prompt">$</span><span>breath_model --stack <span class="dim">MFCC + LSTM + Unity Sentis</span></span></div>
+          <div class="line"><span class="prompt">$</span><span>robot_arm --control <span class="dim">Arduino + PCA9685 + A4988</span></span></div>
+          <div class="line"><span class="prompt">$</span><span>principle <span class="dim">ship working systems, then refine them</span></span></div>
+
+          <div class="meters" aria-label="Skill meters">
+            <div class="meter">
+              <label><span>Unity / XR deployment</span><span>Quest-focused</span></label>
+              <div class="bar"><div class="fill" style="--w: 88%"></div></div>
+            </div>
+            <div class="meter">
+              <label><span>Audio ML pipeline</span><span>real-time</span></label>
+              <div class="bar"><div class="fill" style="--w: 84%"></div></div>
+            </div>
+            <div class="meter">
+              <label><span>Robotics firmware</span><span>hands-on</span></label>
+              <div class="bar"><div class="fill" style="--w: 76%"></div></div>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
-    <p class="hero-scroll">Scroll to explore</p>
   </header>
 
-  <div class="divider"></div>
-
-  <!-- ABOUT -->
-  <section id="about">
-    <p class="section-label">01 — Overview</p>
-    <h2>The Premise</h2>
-    <div class="about-grid">
-      <div>
-        <p>
-          <strong>Project Asphyxia</strong> is a first-person VR horror game built for standalone Meta Quest 3.
-          The central mechanic is simple and deeply unsettling: the monster that hunts you
-          responds to the sound of your breathing — captured live from your headset microphone.
-        </p>
-        <p>
-          Panic, and your breath betrays you. The game's suspicion system drives post-processing
-          vignette effects that close in as the creature grows more aware. There is no hiding
-          from your own body.
-        </p>
-        <p>
-          Built by a small team using Unity's XR Interaction Toolkit with OpenXR, the project
-          features an entirely custom machine-learning breath detection pipeline trained on
-          real recorded data.
-        </p>
-      </div>
-      <div class="about-stats">
-        <div class="stat">
-          <div class="stat-number">95<span>%</span></div>
-          <div class="stat-label">Model accuracy</div>
+  <main>
+    <section id="projects">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Featured work</p>
+            <h2>Two projects, one pattern: sensing, deciding, acting.</h2>
+          </div>
+          <p class="section-note">
+            Both projects connect real-world signals to software systems: breathing becomes gameplay pressure, and physical arm geometry becomes controlled motion.
+          </p>
         </div>
-        <div class="stat">
-          <div class="stat-number">4</div>
-          <div class="stat-label">Classified states</div>
+
+        <article class="project-card" style="--glow: rgba(104, 255, 156, 1);">
+          <div class="project-layout">
+            <div>
+              <div class="project-meta">
+                <span class="tag">Meta Quest 3</span>
+                <span class="tag">Unity URP</span>
+                <span class="tag">Sentis / ONNX</span>
+                <span class="tag">Audio ML</span>
+                <span class="tag">Accessibility</span>
+              </div>
+              <h3>Project Asphyxia — VR horror controlled by breathing</h3>
+              <p class="project-copy">
+                <strong>Project Asphyxia</strong> is a standalone VR horror game for Meta Quest 3 set in a hospital environment.
+                The core mechanic turns breathing into risk: if the player breathes too loudly, a monster’s suspicion level rises;
+                if the player stops breathing for too long, toxicity rises and hallucinations begin to distort the scene.
+              </p>
+              <p class="project-copy" style="margin-top:14px;">
+                I worked across Unity gameplay systems, VR deployment, ML inference, audio processing, post-processing effects,
+                and cross-scene architecture. The game is also designed around wheelchair-accessible play, avoiding mechanics that depend on standing, dodging, or room-scale movement.
+              </p>
+              <div class="project-actions">
+                <a class="btn btn-primary" href="https://justice-123.github.io" target="_blank" rel="noreferrer">Open live project site</a>
+                <a class="btn btn-secondary" href="#skills">See technical stack</a>
+              </div>
+            </div>
+
+            <div>
+              <div class="feature-grid">
+                <div class="feature">
+                  <div class="feature-icon">🎙️</div>
+                  <h4>Breath detection pipeline</h4>
+                  <p>MFCC + LSTM model with inhale, exhale, silence, and noise classes. Exported to ONNX and run in Unity Sentis.</p>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">👁️</div>
+                  <h4>Suspicion feedback</h4>
+                  <p>Monster hearing system drives red vignette feedback so breathing pressure becomes visible and playable.</p>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">☣️</div>
+                  <h4>Toxicity + hallucinations</h4>
+                  <p>Oxygen and toxicity systems trigger desaturation, chromatic aberration, film grain, flickering lights, whispers, and shadow scares.</p>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">🎒</div>
+                  <h4>Diegetic VR inventory</h4>
+                  <p>Grab to store items invisibly, then cycle them back into the player’s hand with controller input through XR Interaction Toolkit.</p>
+                </div>
+              </div>
+
+              <div class="pipeline" aria-label="Breath pipeline">
+                <div class="pipe-step"><div class="pipe-num">1</div><p><strong>Microphone input</strong> is sampled in real time from the VR runtime.</p></div>
+                <div class="pipe-step"><div class="pipe-num">2</div><p><strong>MFCC features</strong> are extracted to match the training pipeline as closely as possible.</p></div>
+                <div class="pipe-step"><div class="pipe-num">3</div><p><strong>LSTM inference</strong> classifies breath/noise states using a Unity-imported ONNX model.</p></div>
+                <div class="pipe-step"><div class="pipe-num">4</div><p><strong>Gameplay systems</strong> convert confidence, RMS gates, and breath state into suspicion, oxygen, and hallucination effects.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><strong>4</strong><span>audio classes in the current model</span></div>
+            <div class="stat"><strong>~1k+</strong><span>recordings used alongside speech data</span></div>
+            <div class="stat"><strong>0.95</strong><span>confidence threshold for inhale detection</span></div>
+            <div class="stat"><strong>Quest 3</strong><span>standalone target platform</span></div>
+          </div>
+        </article>
+
+        <article class="project-card" style="--glow: rgba(255, 184, 107, 1);">
+          <div class="project-layout">
+            <div>
+              <div class="project-meta">
+                <span class="tag">Arduino</span>
+                <span class="tag">PCA9685</span>
+                <span class="tag">A4988</span>
+                <span class="tag">Inverse Kinematics</span>
+                <span class="tag">3D Printing</span>
+              </div>
+              <h3>3D-printed robotic pick-and-place arm</h3>
+              <p class="project-copy">
+                This project is a physical robotic arm built around iterative hardware testing. The system combines a NEMA 17 stepper-driven base,
+                six MG996R servo joints through a PCA9685 servo driver, and an analytical 2-link inverse kinematics solver for reaching target positions.
+              </p>
+              <p class="project-copy" style="margin-top:14px;">
+                The goal is to progressively add capability: first reliable joint control, then coordinate-based movement, then Pixy2 camera integration for object detection and picking.
+                The project mixes mechanical measurement, firmware, calibration, electronics, and practical debugging.
+              </p>
+              <div class="project-actions">
+                <a class="btn btn-primary" href="#process">View build process</a>
+                <a class="btn btn-secondary" href="#contact">Ask about the arm</a>
+              </div>
+            </div>
+
+            <div class="feature-grid">
+              <div class="feature">
+                <div class="feature-icon">🦾</div>
+                <h4>Servo joint control</h4>
+                <p>Six MG996R servos controlled through PCA9685 channels, with mirrored shoulder servos treated as one revolute joint.</p>
+              </div>
+              <div class="feature">
+                <div class="feature-icon">⚙️</div>
+                <h4>Stepper base rotation</h4>
+                <p>NEMA 17 base motor through an A4988 driver using raw step commands for predictable physical testing.</p>
+              </div>
+              <div class="feature">
+                <div class="feature-icon">📐</div>
+                <h4>Measured arm geometry</h4>
+                <p>Base height 142mm, shoulder-to-elbow link 185mm, and elbow-to-wrist link 85mm used for IK calculations.</p>
+              </div>
+              <div class="feature">
+                <div class="feature-icon">📷</div>
+                <h4>Future vision loop</h4>
+                <p>Pixy2 integration planned for pixel-to-world coordinate mapping and camera-guided picking.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><strong>6</strong><span>servo joints through PCA9685</span></div>
+            <div class="stat"><strong>200</strong><span>full steps per NEMA 17 revolution</span></div>
+            <div class="stat"><strong>185mm</strong><span>upper arm link length</span></div>
+            <div class="stat"><strong>85mm</strong><span>forearm link length</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Technical stack</p>
+            <h2>What I use to build.</h2>
+          </div>
+          <p class="section-note">My strongest work is at the boundary between software models and real-time interactive systems.</p>
         </div>
-        <div class="stat">
-          <div class="stat-number">RT</div>
-          <div class="stat-label">Real-time inference</div>
-        </div>
-        <div class="stat">
-          <div class="stat-number">Q<span>3</span></div>
-          <div class="stat-label">Standalone target</div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <div class="divider"></div>
-
-  <!-- BREATH PIPELINE -->
-  <section id="breath">
-    <p class="section-label">02 — Core Technology</p>
-    <h2>The Breath Engine</h2>
-
-    <div class="pipeline">
-      <div class="pipe-step">
-        <div class="pipe-index">01</div>
-        <div class="pipe-name">Microphone Capture</div>
-        <div class="pipe-desc">Quest 3 onboard mic. Continuous streaming audio buffer sampled at runtime inside Unity.</div>
-      </div>
-      <div class="pipe-step">
-        <div class="pipe-index">02</div>
-        <div class="pipe-name">RMS Gate</div>
-        <div class="pipe-desc">Amplitude range filter. Loud signals (speech, knocks) bypass ML — handled by autocorrelation pitch detection instead.</div>
-      </div>
-      <div class="pipe-step">
-        <div class="pipe-index">03</div>
-        <div class="pipe-name">MFCC Extraction</div>
-        <div class="pipe-desc">Mel-Frequency Cepstral Coefficients extracted in C#, mirroring the Python training pipeline exactly to prevent feature mismatch.</div>
-      </div>
-      <div class="pipe-step">
-        <div class="pipe-index">04</div>
-        <div class="pipe-name">LSTM Inference</div>
-        <div class="pipe-desc">4-class LSTM model (inhale / exhale / silence / noise) exported to ONNX, running via Unity Sentis on-device.</div>
-      </div>
-      <div class="pipe-step">
-        <div class="pipe-index">05</div>
-        <div class="pipe-name">Suspicion System</div>
-        <div class="pipe-desc">Inhale detections above 0.95 confidence threshold drive the monster's suspicion level — feeding post-process vignette FX.</div>
-      </div>
-    </div>
-
-    <div class="pipeline-note reveal">
-      <p>
-        <strong>On training / inference parity:</strong> a custom <code>mfcc_mirror.py</code> tool was built
-        to exactly replicate the runtime C# MFCC extraction in Python during training.
-        Frame count mismatches (43 vs 47 frames) between librosa defaults and the Unity implementation
-        caused silent accuracy loss — this tool ensures the model sees identical features at runtime.
-        ONNX export uses <code>dynamo=False</code> with no dynamic axes — the settings required for Unity Sentis compatibility.
-      </p>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- SCREENSHOTS -->
-  <section id="screenshots">
-    <p class="section-label">03 — Visuals</p>
-    <h2>In the Dark</h2>
-    <p class="screenshots-intro">
-      Replace the placeholders below with your own captures — drag your image files into the same
-      folder as this HTML and update the <code>src</code> attributes.
-    </p>
-
-    <div class="gallery">
-      <!-- WIDE HERO SHOT — replace with: <img src="screenshots/hero-shot.jpg" alt="..." style="width:100%;height:100%;object-fit:cover;"> -->
-      <div class="gallery-item">
-        <div class="gallery-placeholder">
-          <div class="gallery-placeholder-icon">🎮</div>
-          <div class="gallery-placeholder-text">Wide atmospheric shot<br/>Recommend: candle-lit corridor or monster reveal</div>
+        <div class="skills-grid">
+          <div class="skill-card">
+            <h3>XR / Unity</h3>
+            <ul>
+              <li>Unity URP</li>
+              <li>Meta Quest 3 deployment</li>
+              <li>OpenXR / XR Interaction Toolkit</li>
+              <li>Additive scene architecture</li>
+              <li>World-space VR UI</li>
+            </ul>
+          </div>
+          <div class="skill-card">
+            <h3>ML / Audio</h3>
+            <ul>
+              <li>PyTorch model training</li>
+              <li>MFCC feature extraction</li>
+              <li>LSTM sequence models</li>
+              <li>ONNX export</li>
+              <li>Unity Sentis inference</li>
+            </ul>
+          </div>
+          <div class="skill-card">
+            <h3>Robotics</h3>
+            <ul>
+              <li>Arduino firmware</li>
+              <li>PCA9685 servo control</li>
+              <li>A4988 stepper control</li>
+              <li>Inverse kinematics</li>
+              <li>Hardware calibration</li>
+            </ul>
+          </div>
+          <div class="skill-card">
+            <h3>Engineering habits</h3>
+            <ul>
+              <li>Physical testing loops</li>
+              <li>Debugging build vs editor issues</li>
+              <li>Prefab ownership for teams</li>
+              <li>Simple reliable architecture</li>
+              <li>Documentation through iteration</li>
+            </ul>
+          </div>
         </div>
       </div>
+    </section>
 
-      <!-- SCREENSHOT 2 -->
-      <div class="gallery-item">
-        <div class="gallery-placeholder">
-          <div class="gallery-placeholder-icon">🕯️</div>
-          <div class="gallery-placeholder-text">Lighting / atmosphere detail</div>
+    <section id="process">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">How I work</p>
+            <h2>Debugging from the real system backwards.</h2>
+          </div>
+          <p class="section-note">The most important lessons came from the gaps between theory, editor behaviour, hardware behaviour, and deployed builds.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="time">01</div>
+            <div>
+              <h3>Prototype the mechanic first</h3>
+              <p>I start with the player-facing behaviour: breath raises suspicion, oxygen creates pressure, the arm reaches a target, or the gripper closes. Once the behaviour feels real, I refine the architecture underneath it.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="time">02</div>
+            <div>
+              <h3>Test in the target environment</h3>
+              <p>For VR, that means standalone Quest builds as well as editor testing. For robotics, that means physical servo and stepper tests instead of trusting abstractions too early.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="time">03</div>
+            <div>
+              <h3>Prefer clear state changes</h3>
+              <p>Systems are easier to debug when important state changes go through one path. Direct field writes, hidden inspector overrides, and unreliable input bindings can silently break otherwise correct code.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="time">04</div>
+            <div>
+              <h3>Calibrate from evidence</h3>
+              <p>Whether aligning MFCC features between Python and C#, tuning servo limits, or fixing Guardian offset spawn issues, I treat mismatches as measurement problems first.</p>
+            </div>
+          </div>
         </div>
       </div>
+    </section>
 
-      <!-- SCREENSHOT 3 -->
-      <div class="gallery-item">
-        <div class="gallery-placeholder">
-          <div class="gallery-placeholder-icon">👁️</div>
-          <div class="gallery-placeholder-text">Monster or suspicion vignette FX</div>
+    <section id="contact">
+      <div class="container">
+        <div class="contact-card">
+          <div>
+            <p class="section-kicker">Contact</p>
+            <h2>Interested in XR, ML, robotics, or applied systems?</h2>
+            <p>
+              I’m especially interested in roles and collaborations where software has to work under real constraints: real-time input,
+              embodied interaction, hardware limits, accessibility, and deployment outside a perfect development environment.
+            </p>
+          </div>
+          <div class="hero-actions" style="margin-top:0;">
+            <a class="btn btn-primary" href="mailto:your-email@example.com">Email me</a>
+            <a class="btn btn-secondary" href="https://github.com/justice-123" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
         </div>
       </div>
+    </section>
+  </main>
 
-      <!-- SCREENSHOT 4 -->
-      <div class="gallery-item">
-        <div class="gallery-placeholder">
-          <div class="gallery-placeholder-icon">🫁</div>
-          <div class="gallery-placeholder-text">Breath debug HUD or gameplay UI</div>
-        </div>
-      </div>
-
-      <!-- SCREENSHOT 5 -->
-      <div class="gallery-item">
-        <div class="gallery-placeholder">
-          <div class="gallery-placeholder-icon">🔦</div>
-          <div class="gallery-placeholder-text">Environmental exploration</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- TECH STACK -->
-  <section id="tech">
-    <p class="section-label">04 — Tech Stack</p>
-    <h2>Built With</h2>
-
-    <div class="tech-grid reveal">
-      <div class="tech-item">
-        <div class="tech-category">Engine</div>
-        <div class="tech-name">Unity URP</div>
-        <div class="tech-detail">Universal Render Pipeline. Additive scene loading with persistent CoreScene architecture.</div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-category">XR</div>
-        <div class="tech-name">XR Toolkit</div>
-        <div class="tech-detail">XR Interaction Toolkit with OpenXR. NearFarInteractor for grabbing and interaction.</div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-category">ML Runtime</div>
-        <div class="tech-name">Unity Sentis</div>
-        <div class="tech-detail">On-device ONNX inference via Unity's Sentis (formerly Barracuda/Inference Engine).</div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-category">ML Training</div>
-        <div class="tech-name">PyTorch + ONNX</div>
-        <div class="tech-detail">LSTM trained in Python with librosa for feature extraction, exported to ONNX with dynamo=False.</div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-category">Platform</div>
-        <div class="tech-name">Meta Quest 3</div>
-        <div class="tech-detail">Standalone Android build. Developed via Meta Horizon Link PC VR mode.</div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-category">Input</div>
-        <div class="tech-name">Input System</div>
-        <div class="tech-detail">Unity Input System with Input Actions assets. Meta Quest Touch controller profile via OpenXR.</div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-category">Architecture</div>
-        <div class="tech-name">GameEvents Bus</div>
-        <div class="tech-detail">Static event bus for cross-scene communication. Prefab ownership model for team Git workflow.</div>
-      </div>
-      <div class="tech-item">
-        <div class="tech-category">Audio</div>
-        <div class="tech-name">LibriSpeech</div>
-        <div class="tech-detail">Training data includes custom breath recordings + LibriSpeech speech samples for noise class robustness.</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- TEAM -->
-  <section id="team">
-    <p class="section-label">05 — Credits</p>
-    <h2>The Team</h2>
-    <p>
-      A collaborative student project. Update the names and roles below to match your actual team.
-    </p>
-    <div class="team-grid reveal">
-      <!-- Add / remove members as needed -->
-      <div class="team-member">
-        <div class="member-name">Your Name</div>
-        <div class="member-role">Lead Developer / ML Engineer</div>
-      </div>
-      <div class="team-member">
-        <div class="member-name">Team Member</div>
-        <div class="member-role">Role Here</div>
-      </div>
-      <div class="team-member">
-        <div class="member-name">Team Member</div>
-        <div class="member-role">Role Here</div>
-      </div>
-      <div class="team-member">
-        <div class="member-name">Team Member</div>
-        <div class="member-role">Role Here</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- CTA -->
-  <div id="cta">
-    <h2>See It<br/><em>In Action</em></h2>
-    <div class="cta-links">
-      <!-- Update these hrefs -->
-      <a href="#" class="cta-link primary">Watch Gameplay Video</a>
-      <a href="https://github.com/justice-123/portfolio/tree/main" class="cta-link" target="_blank">View on GitHub</a>
-      <a href="mailto:your@email.com" class="cta-link">Get in Touch</a>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
   <footer>
-    <p>© 2025 — Project Asphyxia VR Horror Team</p>
-    <p>Unity · Meta Quest 3 · LSTM · OpenXR</p>
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Justice Mintah. Built as a technical project portfolio.</span>
+      <span>BSc Computer Science · University of Bristol · Expected June 2026</span>
+    </div>
   </footer>
 
   <script>
-    // Scroll reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    reveals.forEach(el => observer.observe(el));
+    const canvas = document.getElementById('gas-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
 
-    // Slow vignette pulse (ambient horror)
-    const vig = document.getElementById('vigRing');
-    let on = false;
-    setInterval(() => {
-      on = !on;
-      vig.classList.toggle('pulse', on);
-    }, 4000);
+    function resize() {
+      canvas.width = window.innerWidth * window.devicePixelRatio;
+      canvas.height = window.innerHeight * window.devicePixelRatio;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+      createParticles();
+    }
+
+    function createParticles() {
+      const count = Math.min(95, Math.floor(window.innerWidth / 16));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: 20 + Math.random() * 80,
+        vx: -0.12 + Math.random() * 0.24,
+        vy: -0.22 - Math.random() * 0.35,
+        alpha: 0.025 + Math.random() * 0.075
+      }));
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      for (const p of particles) {
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+        gradient.addColorStop(0, `rgba(104, 255, 156, ${p.alpha})`);
+        gradient.addColorStop(0.55, `rgba(32, 215, 107, ${p.alpha * 0.45})`);
+        gradient.addColorStop(1, 'rgba(104, 255, 156, 0)');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.y + p.r < 0) {
+          p.y = window.innerHeight + p.r;
+          p.x = Math.random() * window.innerWidth;
+        }
+        if (p.x + p.r < 0) p.x = window.innerWidth + p.r;
+        if (p.x - p.r > window.innerWidth) p.x = -p.r;
+      }
+      requestAnimationFrame(draw);
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+    window.addEventListener('resize', resize);
+    resize();
+    draw();
   </script>
 </body>
 </html>
