@@ -3,25 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Justice Mintah | XR, ML & Robotics Portfolio</title>
-  <meta name="description" content="Portfolio for Justice Mintah, BSc Computer Science student building Project Asphyxia, a Meta Quest 3 VR horror game, and a 3D-printed robotic pick-and-place arm." />
+  <title>Justice Mintah | Portfolio</title>
+  <meta name="description" content="Portfolio for Justice Mintah, Computer Science student at the University of Bristol building VR, machine learning, computer vision, robotics and graphics projects." />
   <style>
     :root {
-      --bg: #050807;
-      --bg-soft: #0b120f;
-      --card: rgba(15, 28, 22, 0.78);
-      --card-strong: rgba(18, 39, 30, 0.95);
-      --line: rgba(126, 255, 171, 0.18);
-      --text: #eefcf4;
-      --muted: #a9bdb2;
-      --green: #68ff9c;
-      --green-2: #20d76b;
-      --cyan: #70f7ff;
-      --amber: #ffb86b;
-      --red: #ff6b7a;
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
-      --radius-xl: 28px;
-      --radius-lg: 20px;
+      --bg: #efeee8;
+      --paper: #fffdf7;
+      --ink: #121212;
+      --muted: #5f5a50;
+      --line: #1c1c1c;
+      --soft-line: rgba(18, 18, 18, 0.14);
+      --accent: #0a57ff;
+      --accent-2: #0b8f53;
+      --warm: #ffb000;
+      --danger: #b91c1c;
+      --shadow: 0 24px 70px rgba(18, 18, 18, 0.13);
     }
 
     * {
@@ -35,30 +31,17 @@
     }
 
     body {
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
       background:
-        radial-gradient(circle at 15% 15%, rgba(32, 215, 107, 0.20), transparent 32%),
-        radial-gradient(circle at 85% 20%, rgba(112, 247, 255, 0.10), transparent 28%),
-        radial-gradient(circle at 50% 95%, rgba(255, 184, 107, 0.12), transparent 35%),
+        linear-gradient(90deg, rgba(18,18,18,0.035) 1px, transparent 1px),
+        linear-gradient(rgba(18,18,18,0.035) 1px, transparent 1px),
+        radial-gradient(circle at 8% 8%, rgba(10, 87, 255, 0.12), transparent 25%),
+        radial-gradient(circle at 92% 18%, rgba(11, 143, 83, 0.10), transparent 28%),
         var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-    }
-
-    #gas-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      opacity: 0.55;
-    }
-
-    .noise {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.05;
-      z-index: -1;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 34px 34px, 34px 34px, auto, auto, auto;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.45;
     }
 
     a {
@@ -66,1022 +49,1042 @@
       text-decoration: none;
     }
 
-    .container {
-      width: min(1120px, calc(100% - 36px));
-      margin: 0 auto;
+    button {
+      font: inherit;
     }
 
-    .nav {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(18px);
-      background: rgba(5, 8, 7, 0.72);
-      border-bottom: 1px solid var(--line);
+    .site-frame {
+      width: min(1160px, calc(100% - 28px));
+      margin: 22px auto 34px;
     }
 
-    .nav-inner {
+    .paper {
+      background: var(--paper);
+      border: 2px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .top-strip {
       display: flex;
+      justify-content: center;
       align-items: center;
-      justify-content: space-between;
-      min-height: 72px;
-      gap: 18px;
+      padding: 14px 22px;
+      border-bottom: 2px solid var(--line);
+      background: rgba(255, 255, 255, 0.42);
     }
 
-    .brand {
+    .tiny-nav {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-    }
-
-    .brand-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      color: #041007;
-      background: linear-gradient(135deg, var(--green), var(--cyan));
-      box-shadow: 0 0 28px rgba(104, 255, 156, 0.35);
-    }
-
-    .nav-links {
-      display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      justify-content: center;
+      font-size: 0.88rem;
     }
 
-    .nav-links a {
-      color: var(--muted);
-      font-size: 0.92rem;
-      padding: 10px 12px;
+    .tiny-nav a {
+      border: 1px solid var(--line);
+      padding: 5px 9px;
       border-radius: 999px;
-      transition: 160ms ease;
+      background: #fff;
     }
 
-    .nav-links a:hover {
-      color: var(--text);
-      background: rgba(104, 255, 156, 0.09);
+    .tiny-nav a:hover {
+      background: var(--ink);
+      color: var(--paper);
     }
 
-    .hero {
-      min-height: calc(100vh - 72px);
+    header {
       display: grid;
-      align-items: center;
-      padding: 84px 0 64px;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      padding: 24px 42px 22px;
+      border-bottom: 2px solid var(--line);
+      position: relative;
     }
 
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: 34px;
-      align-items: center;
-    }
-
-    .eyebrow {
+    .stamp {
       display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--green);
-      border: 1px solid rgba(104, 255, 156, 0.25);
-      background: rgba(104, 255, 156, 0.06);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-weight: 700;
-      font-size: 0.82rem;
-      margin-bottom: 22px;
-    }
-
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 16px var(--green);
-      animation: pulse 1.8s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.45); opacity: 1; }
+      transform: rotate(-1.5deg);
+      border: 2px solid var(--danger);
+      color: var(--danger);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.7rem;
+      font-weight: 900;
+      padding: 4px 8px;
+      margin-bottom: 12px;
     }
 
     h1 {
-      font-size: clamp(3.1rem, 8vw, 6.9rem);
-      line-height: 0.88;
-      letter-spacing: -0.085em;
-      margin-bottom: 24px;
+      font-size: clamp(2.2rem, 5vw, 3.7rem);
+      line-height: 0.92;
+      letter-spacing: -0.075em;
+      margin-bottom: 12px;
     }
 
-    .gradient-text {
-      background: linear-gradient(135deg, #ffffff 0%, var(--green) 48%, var(--cyan) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero-copy {
+    .headline {
+      max-width: 760px;
+      font-size: 1.03rem;
       color: var(--muted);
-      font-size: clamp(1.06rem, 1.6vw, 1.25rem);
-      line-height: 1.7;
-      max-width: 720px;
     }
 
-    .hero-copy strong {
-      color: var(--text);
-      font-weight: 750;
+    .headline strong {
+      color: var(--ink);
     }
 
-    .hero-actions {
+    .role-strip {
       display: flex;
-      gap: 14px;
       flex-wrap: wrap;
-      margin-top: 34px;
+      gap: 8px;
+      margin-top: 14px;
     }
 
-    .btn {
+    .role-strip span {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      border-radius: 999px;
-      padding: 14px 18px;
-      font-weight: 800;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      transition: 180ms ease;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      color: #031107;
-      background: linear-gradient(135deg, var(--green), var(--cyan));
-      box-shadow: 0 16px 42px rgba(32, 215, 107, 0.26);
-    }
-
-    .btn-secondary {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.08);
-    }
-
-    .hero-panel {
-      position: relative;
       border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      background: linear-gradient(180deg, rgba(15, 32, 24, 0.92), rgba(7, 13, 10, 0.92));
-      box-shadow: var(--shadow);
-      padding: 24px;
+      border-radius: 999px;
+      background: #fff;
+      padding: 6px 9px;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .intro-panel {
+      border: 2px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      background: #fff;
+      align-self: start;
+      position: relative;
       overflow: hidden;
     }
 
-    .hero-panel::before {
+    .intro-panel::before {
       content: "";
       position: absolute;
-      inset: -2px;
-      background: radial-gradient(circle at 50% 0%, rgba(104, 255, 156, 0.24), transparent 46%);
-      pointer-events: none;
+      inset: 0 0 auto;
+      height: 9px;
+      background: repeating-linear-gradient(90deg, var(--accent), var(--accent) 24px, var(--warm) 24px, var(--warm) 48px, var(--accent-2) 48px, var(--accent-2) 72px);
     }
 
-    .panel-top {
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-      color: var(--muted);
-      font-size: 0.84rem;
-    }
-
-    .status-pill {
-      color: var(--green);
-      border: 1px solid rgba(104, 255, 156, 0.22);
-      background: rgba(104, 255, 156, 0.07);
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-weight: 800;
-    }
-
-    .terminal {
-      position: relative;
-      border-radius: 22px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(0, 0, 0, 0.42);
-      padding: 18px;
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-      min-height: 330px;
-    }
-
-    .line {
-      display: flex;
-      gap: 12px;
-      padding: 8px 0;
-      color: #dfffe9;
-      line-height: 1.5;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.045);
-    }
-
-    .line:last-child {
-      border-bottom: 0;
-    }
-
-    .prompt {
-      color: var(--green);
-      flex: 0 0 auto;
-    }
-
-    .terminal .dim {
-      color: #83a892;
-    }
-
-    .meters {
-      display: grid;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .meter label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 7px;
-    }
-
-    .bar {
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      overflow: hidden;
-    }
-
-    .fill {
-      height: 100%;
-      width: var(--w);
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--green), var(--cyan));
-      box-shadow: 0 0 18px rgba(104, 255, 156, 0.35);
-    }
-
-    main {
-      padding-bottom: 80px;
-    }
-
-    section {
-      padding: 86px 0;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 22px;
-      margin-bottom: 28px;
-    }
-
-    .section-kicker {
-      color: var(--green);
+    .intro-panel h2 {
+      margin-top: 8px;
+      font-size: 1rem;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
-      font-weight: 900;
-      font-size: 0.78rem;
+      letter-spacing: 0.1em;
       margin-bottom: 10px;
     }
 
-    h2 {
-      font-size: clamp(2rem, 4vw, 3.8rem);
-      letter-spacing: -0.06em;
-      line-height: 0.98;
+    .intro-panel p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .intro-panel ul {
+      margin-left: 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .intro-panel li {
+      margin: 5px 0;
+    }
+
+    .contact-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .contact-row a {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      padding: 6px 9px;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .contact-row a:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    main {
+      display: block;
+      min-height: 650px;
+    }
+
+    .content {
+      padding: 28px 42px 46px;
+    }
+
+    section + section {
+      margin-top: 34px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-head h2 {
+      font-size: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    .section-line {
+      height: 2px;
+      background: var(--line);
     }
 
     .section-note {
       color: var(--muted);
-      max-width: 430px;
-      line-height: 1.65;
+      font-style: italic;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .project-board {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+    }
+
+    .featured-project,
+    .project-card {
+      border: 2px solid var(--line);
+      background: #fff;
+      text-align: left;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 170ms ease, box-shadow 170ms ease;
+    }
+
+    .featured-project:hover,
+    .project-card:hover {
+      transform: translateY(-4px) rotate(-0.4deg);
+      box-shadow: var(--shadow);
+    }
+
+    .featured-project {
+      border-radius: 26px;
+      min-height: 100%;
     }
 
     .project-card {
-      position: relative;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(14, 28, 22, 0.86), rgba(8, 14, 11, 0.92));
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-      padding: 30px;
-      overflow: hidden;
-      margin-bottom: 28px;
+      border-radius: 20px;
     }
 
-    .project-card::after {
-      content: "";
-      position: absolute;
-      width: 360px;
-      height: 360px;
-      border-radius: 50%;
-      top: -220px;
-      right: -150px;
-      background: radial-gradient(circle, var(--glow), transparent 65%);
-      opacity: 0.32;
-      pointer-events: none;
+    .stacked-projects {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
     }
 
-    .project-layout {
+    .project-image {
+      min-height: 245px;
       position: relative;
       display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      gap: 28px;
-      align-items: start;
+      place-items: center;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, var(--a), var(--b)),
+        #ddd;
     }
 
-    .project-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin-bottom: 20px;
+    .project-card .project-image {
+      min-height: 135px;
     }
 
-    .tag {
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.055);
-      color: #d9f4e3;
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 800;
+    .project-image img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    h3 {
-      font-size: clamp(1.7rem, 3.2vw, 3.1rem);
-      letter-spacing: -0.055em;
-      line-height: 1.02;
+    .image-placeholder {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #fff;
+      padding: 20px;
+      width: calc(100% - 30px);
+      height: calc(100% - 30px);
+      border: 1px dashed rgba(255, 255, 255, 0.55);
+      border-radius: 18px;
+      text-shadow: 0 3px 18px rgba(0, 0, 0, 0.35);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .image-placeholder strong {
+      display: block;
+      font-size: clamp(1.1rem, 2vw, 1.6rem);
+      letter-spacing: -0.04em;
+    }
+
+    .image-placeholder span {
+      display: block;
+      font-size: 0.76rem;
+      opacity: 0.86;
+      margin-top: 5px;
+    }
+
+    .project-body {
+      padding: 18px;
+    }
+
+    .featured-project .project-body {
+      padding: 22px;
+    }
+
+    .project-kicker {
+      color: var(--accent);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 900;
+      font-size: 0.7rem;
+      margin-bottom: 6px;
+    }
+
+    .project-body h3 {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      letter-spacing: -0.045em;
+      line-height: 1;
+      margin-bottom: 9px;
+    }
+
+    .project-card .project-body h3 {
+      font-size: 1.04rem;
+    }
+
+    .project-body p {
+      color: var(--muted);
+      font-size: 0.94rem;
+      margin-bottom: 12px;
+    }
+
+    .open-label {
+      display: inline-flex;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 900;
+      color: var(--ink);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .entry {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      border-bottom: 1px dashed var(--soft-line);
+      padding: 0 0 18px;
       margin-bottom: 18px;
     }
 
-    .project-copy {
+    .entry:last-child {
+      border-bottom: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .date-pill {
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 0.78rem;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      padding: 6px 8px;
+      text-align: center;
+      height: max-content;
+      background: #fff;
+    }
+
+    .entry h3 {
+      font-size: 1.06rem;
+      margin-bottom: 5px;
+    }
+
+    .entry .subline {
       color: var(--muted);
-      line-height: 1.75;
-      font-size: 1rem;
+      font-style: italic;
+      margin-bottom: 7px;
     }
 
-    .project-copy strong {
-      color: var(--text);
+    .entry ul {
+      margin-left: 18px;
+      color: var(--muted);
     }
 
-    .project-actions {
+    .entry li {
+      margin: 5px 0;
+      font-size: 0.95rem;
+    }
+
+    .skill-cloud {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 24px;
+      gap: 8px;
+      margin-top: 10px;
     }
 
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-    }
-
-    .feature {
-      border: 1px solid rgba(255, 255, 255, 0.085);
-      background: rgba(255, 255, 255, 0.045);
-      border-radius: var(--radius-lg);
+    .skills-panel {
+      border: 2px solid var(--line);
+      border-radius: 22px;
+      background: #fff;
       padding: 18px;
     }
 
-    .feature-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: rgba(104, 255, 156, 0.10);
-      border: 1px solid rgba(104, 255, 156, 0.16);
-      margin-bottom: 14px;
+    .skills-panel p {
+      color: var(--muted);
+      margin-bottom: 12px;
     }
 
-    .feature h4 {
-      margin-bottom: 8px;
-      font-size: 1rem;
+    .pill {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: #fff;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+
+    .project-groups {
+      display: grid;
+      gap: 26px;
+    }
+
+    .project-group {
+      border: 2px solid var(--line);
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.55);
+      padding: 18px;
+    }
+
+    .project-group-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      border-bottom: 1px dashed var(--soft-line);
+      padding-bottom: 10px;
+    }
+
+    .project-group-header h3 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
       letter-spacing: -0.02em;
     }
 
-    .feature p {
+    .project-group-header span {
       color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.91rem;
-    }
-
-    .pipeline {
-      display: grid;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .pipe-step {
-      display: grid;
-      grid-template-columns: 44px 1fr;
-      align-items: center;
-      gap: 12px;
-      padding: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(0, 0, 0, 0.18);
-      border-radius: 16px;
-    }
-
-    .pipe-num {
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      border-radius: 13px;
-      background: linear-gradient(135deg, rgba(104, 255, 156, 0.18), rgba(112, 247, 255, 0.12));
-      color: var(--green);
-      font-weight: 900;
-    }
-
-    .pipe-step p {
-      color: var(--muted);
-      line-height: 1.45;
+      font-style: italic;
       font-size: 0.9rem;
     }
 
-    .stats {
+    .media-project-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .description-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 14px;
-      margin-top: 22px;
     }
 
-    .stat {
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 18px;
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 1.7rem;
-      letter-spacing: -0.05em;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: 0.82rem;
-      line-height: 1.4;
-    }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    .skill-card {
+    .text-project-card {
       border: 1px solid var(--line);
-      background: rgba(15, 28, 22, 0.72);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      min-height: 210px;
+      border-radius: 18px;
+      background: #fff;
+      padding: 16px;
     }
 
-    .skill-card h3 {
-      font-size: 1.15rem;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
+    .text-project-card h4 {
+      font-size: 1rem;
+      line-height: 1.15;
+      margin-bottom: 7px;
+      letter-spacing: -0.025em;
     }
 
-    .skill-card ul {
-      list-style: none;
-      display: grid;
-      gap: 10px;
+    .text-project-card p {
       color: var(--muted);
-      line-height: 1.45;
-      font-size: 0.93rem;
+      font-size: 0.92rem;
+      margin-bottom: 10px;
     }
 
-    .skill-card li::before {
-      content: "•";
-      color: var(--green);
-      margin-right: 8px;
-    }
-
-    .timeline {
-      border: 1px solid var(--line);
-      background: rgba(15, 28, 22, 0.72);
-      border-radius: var(--radius-xl);
-      padding: 26px;
-    }
-
-    .timeline-item {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 20px;
-      padding: 22px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .timeline-item:last-child {
-      border-bottom: 0;
-    }
-
-    .time {
-      color: var(--green);
-      font-weight: 900;
-    }
-
-    .timeline-item h3 {
-      font-size: 1.25rem;
-      letter-spacing: -0.03em;
-      margin-bottom: 8px;
-    }
-
-    .timeline-item p {
+    .text-project-card ul {
+      margin-left: 17px;
       color: var(--muted);
-      line-height: 1.65;
+      font-size: 0.9rem;
     }
 
-    .contact-card {
+    .text-project-card li {
+      margin: 4px 0;
+    }
+
+    .text-project-card.wip {
+      border-style: dashed;
+      background: #fffaf0;
+    }
+
+    @media (max-width: 920px) {
+      .media-project-grid,
+      .description-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgba(18, 18, 18, 0.68);
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: grid;
+    }
+
+    .modal {
+      width: min(980px, 100%);
+      max-height: min(90vh, 900px);
+      overflow: auto;
+      background: var(--paper);
+      color: var(--ink);
+      border: 2px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 32px 90px rgba(0, 0, 0, 0.42);
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 24px;
-      align-items: center;
-      border: 1px solid rgba(104, 255, 156, 0.28);
-      background:
-        radial-gradient(circle at 12% 0%, rgba(104, 255, 156, 0.17), transparent 35%),
-        linear-gradient(135deg, rgba(15, 28, 22, 0.96), rgba(4, 10, 7, 0.96));
-      border-radius: var(--radius-xl);
-      padding: 34px;
-      box-shadow: var(--shadow);
+      gap: 18px;
+      background: rgba(255, 253, 247, 0.96);
+      border-bottom: 2px solid var(--line);
+      padding: 20px 22px;
+      backdrop-filter: blur(10px);
     }
 
-    .contact-card h2 {
-      margin-bottom: 14px;
+    .modal-title h2 {
+      font-size: clamp(1.4rem, 3vw, 2.3rem);
+      letter-spacing: -0.05em;
+      line-height: 1;
+      margin-bottom: 6px;
+      text-transform: none;
     }
 
-    .contact-card p {
+    .modal-title p {
       color: var(--muted);
-      line-height: 1.65;
-      max-width: 710px;
+      font-style: italic;
     }
 
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 26px 0;
+    .close-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      background: #fff;
+      cursor: pointer;
+      font-size: 1.35rem;
+      line-height: 1;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .modal-body {
+      padding: 22px;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .video-wrap {
+      aspect-ratio: 16 / 9;
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      background: #111;
+      overflow: hidden;
+    }
+
+    .video-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .gallery {
+      display: grid;
+      gap: 11px;
+    }
+
+    .gallery-slot {
+      min-height: 90px;
+      border: 1px dashed rgba(18, 18, 18, 0.38);
+      border-radius: 16px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .gallery-slot img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-slot span {
+      color: var(--muted);
+      font-size: 0.78rem;
+      position: relative;
+      z-index: 1;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .modal-copy {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .modal-copy h3 {
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .modal-copy p,
+    .modal-copy li {
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .modal-copy ul {
+      margin-left: 18px;
+    }
+
+    .note {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border: 1px solid var(--soft-line);
+      border-radius: 14px;
+      background: #fff;
       color: var(--muted);
       font-size: 0.9rem;
     }
 
-    .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    @media (max-width: 900px) {
-      .hero-grid,
-      .project-layout,
-      .contact-card {
+    @media (max-width: 920px) {
+      header,
+      .project-board,
+      .media-grid,
+      .modal-copy {
         grid-template-columns: 1fr;
       }
 
-      .skills-grid,
-      .stats {
+      .stacked-projects {
         grid-template-columns: repeat(2, 1fr);
       }
+    }
 
-      .section-heading {
-        display: block;
+    @media (max-width: 650px) {
+      .site-frame {
+        width: 100%;
+        margin: 0;
+      }
+
+      .paper {
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+      }
+
+      .top-strip,
+      header,
+      .content {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .entry,
+      .section-head,
+      .stacked-projects {
+        grid-template-columns: 1fr;
       }
 
       .section-note {
-        margin-top: 14px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .nav-inner {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 16px 0;
-      }
-
-      .nav-links {
-        justify-content: flex-start;
-      }
-
-      .feature-grid,
-      .skills-grid,
-      .stats,
-      .timeline-item {
-        grid-template-columns: 1fr;
-      }
-
-      .hero {
-        padding-top: 52px;
-      }
-
-      .project-card,
-      .contact-card {
-        padding: 22px;
+        white-space: normal;
       }
     }
   </style>
 </head>
 <body>
-  <canvas id="gas-canvas" aria-hidden="true"></canvas>
-  <div class="noise" aria-hidden="true"></div>
-
-  <nav class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="#top" aria-label="Justice Mintah home">
-        <span class="brand-mark">JM</span>
-        <span>Justice Mintah</span>
-      </a>
-      <div class="nav-links" aria-label="Main navigation">
-        <a href="#projects">Projects</a>
-        <a href="#skills">Skills</a>
-        <a href="#process">Process</a>
-        <a href="#contact">Contact</a>
-      </div>
-    </div>
-  </nav>
-
-  <header class="hero" id="top">
-    <div class="container hero-grid">
-      <div>
-        <div class="eyebrow"><span class="pulse-dot"></span> XR · Machine Learning · Robotics</div>
-        <h1><span class="gradient-text">Building systems</span><br />that react to the real world.</h1>
-        <p class="hero-copy">
-          I’m <strong>Justice Mintah</strong>, a second-year BSc Computer Science student at the
-          <strong>University of Bristol</strong>. My work sits between software and hardware:
-          standalone VR on Meta Quest 3, real-time audio ML, Unity systems, Arduino firmware,
-          inverse kinematics, and physical prototyping.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#projects">View featured projects</a>
-          <a class="btn btn-secondary" href="#contact">Get in touch</a>
-        </div>
+  <div class="site-frame">
+    <div class="paper">
+      <div class="top-strip">
+        <nav class="tiny-nav" aria-label="Main navigation">
+          <a href="#experience">Experience</a>
+          <a href="#projects">Projects</a>
+          <a href="#education">Education</a>
+          <a href="#skills">Skills</a>
+        </nav>
       </div>
 
-      <aside class="hero-panel" aria-label="Technical summary panel">
-        <div class="panel-top">
-          <span>Live build profile</span>
-          <span class="status-pill">Portfolio</span>
-        </div>
-        <div class="terminal">
-          <div class="line"><span class="prompt">$</span><span>focus --roles <span class="dim">ML Engineer / XR Developer / Robotics Builder</span></span></div>
-          <div class="line"><span class="prompt">$</span><span>project_asphyxia --target <span class="dim">Meta Quest 3 standalone</span></span></div>
-          <div class="line"><span class="prompt">$</span><span>breath_model --stack <span class="dim">MFCC + LSTM + Unity Sentis</span></span></div>
-          <div class="line"><span class="prompt">$</span><span>robot_arm --control <span class="dim">Arduino + PCA9685 + A4988</span></span></div>
-          <div class="line"><span class="prompt">$</span><span>principle <span class="dim">ship working systems, then refine them</span></span></div>
-
-          <div class="meters" aria-label="Skill meters">
-            <div class="meter">
-              <label><span>Unity / XR deployment</span><span>Quest-focused</span></label>
-              <div class="bar"><div class="fill" style="--w: 88%"></div></div>
-            </div>
-            <div class="meter">
-              <label><span>Audio ML pipeline</span><span>real-time</span></label>
-              <div class="bar"><div class="fill" style="--w: 84%"></div></div>
-            </div>
-            <div class="meter">
-              <label><span>Robotics firmware</span><span>hands-on</span></label>
-              <div class="bar"><div class="fill" style="--w: 76%"></div></div>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </div>
-  </header>
-
-  <main>
-    <section id="projects">
-      <div class="container">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Featured work</p>
-            <h2>Two projects, one pattern: sensing, deciding, acting.</h2>
-          </div>
-          <p class="section-note">
-            Both projects connect real-world signals to software systems: breathing becomes gameplay pressure, and physical arm geometry becomes controlled motion.
+      <header>
+        <div>
+          <span class="stamp">Portfolio</span>
+          <h1>Justice Mintah</h1>
+          <p class="headline">
+            BSc Computer Science student at the <strong>University of Bristol</strong>, building applied systems across VR, machine learning, computer vision, robotics and graphics.
           </p>
+          <div class="role-strip" aria-label="Portfolio focus areas">
+            <span>XR + Unity</span>
+            <span>Audio ML</span>
+            <span>Computer Vision</span>
+            <span>Robotics</span>
+            <span>C++ Graphics</span>
+          </div>
+          <div class="contact-row" aria-label="Contact links">
+            <a href="mailto:jmintah166@gmail.com">Email</a>
+            <a href="https://www.linkedin.com/in/justice-mintah-832b40297/" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a href="https://github.com/justice-123" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://justice-123.github.io" target="_blank" rel="noreferrer">Project site</a>
+          </div>
         </div>
 
-        <article class="project-card" style="--glow: rgba(104, 255, 156, 1);">
-          <div class="project-layout">
-            <div>
-              <div class="project-meta">
-                <span class="tag">Meta Quest 3</span>
-                <span class="tag">Unity URP</span>
-                <span class="tag">Sentis / ONNX</span>
-                <span class="tag">Audio ML</span>
-                <span class="tag">Accessibility</span>
-              </div>
-              <h3>Project Asphyxia — VR horror controlled by breathing</h3>
-              <p class="project-copy">
-                <strong>Project Asphyxia</strong> is a standalone VR horror game for Meta Quest 3 set in a hospital environment.
-                The core mechanic turns breathing into risk: if the player breathes too loudly, a monster’s suspicion level rises;
-                if the player stops breathing for too long, toxicity rises and hallucinations begin to distort the scene.
-              </p>
-              <p class="project-copy" style="margin-top:14px;">
-                I worked across Unity gameplay systems, VR deployment, ML inference, audio processing, post-processing effects,
-                and cross-scene architecture. The game is also designed around wheelchair-accessible play, avoiding mechanics that depend on standing, dodging, or room-scale movement.
-              </p>
-              <div class="project-actions">
-                <a class="btn btn-primary" href="https://justice-123.github.io" target="_blank" rel="noreferrer">Open live project site</a>
-                <a class="btn btn-secondary" href="#skills">See technical stack</a>
-              </div>
+        <aside class="intro-panel" id="education" aria-label="Education">
+          <h2>Education</h2>
+          <p><strong>University of Bristol — BSc Computer Science</strong></p>
+          <ul>
+            <li>Expected 1st Class, graduating June 2026.</li>
+            <li>Ranked 1st in cohort for Computer Systems A.</li>
+            <li>Top 12 in cohort for Machine Learning.</li>
+          </ul>
+        </aside>
+      </header>
+
+      <main>
+        <div class="content">
+          <section id="experience">
+            <div class="section-head">
+              <h2>Experience</h2>
+              <div class="section-line"></div>
+              <span class="section-note">software, ML and deployment</span>
             </div>
 
-            <div>
-              <div class="feature-grid">
-                <div class="feature">
-                  <div class="feature-icon">🎙️</div>
-                  <h4>Breath detection pipeline</h4>
-                  <p>MFCC + LSTM model with inhale, exhale, silence, and noise classes. Exported to ONNX and run in Unity Sentis.</p>
+            <article class="entry">
+              <span class="date-pill">Oct 2024<br />Apr 2025</span>
+              <div>
+                <h3>ML/AI Prediction Micro-services Application for a Client — DigitalU3</h3>
+                <p class="subline">Bristol, England</p>
+                <ul>
+                  <li>Developed an ML/AI micro-service layer for real-time detection of fire, smoke and oil leaks in an IoT platform.</li>
+                  <li>Trained and fine-tuned a YOLOv5 CNN on 900+ labelled images for fire and smoke object detection.</li>
+                  <li>Built REST API endpoints using Python and SQL, developed the React frontend, and deployed using AWS and Docker.</li>
+                  <li>Worked with kanban workflows, pull request reviews, and client/mentor feedback cycles.</li>
+                </ul>
+              </div>
+            </article>
+          </section>
+
+
+
+          <section id="projects">
+            <div class="section-head">
+              <h2>Technical Projects</h2>
+              <div class="section-line"></div>
+              <span class="section-note">visual case studies + written project notes</span>
+            </div>
+
+            <div class="project-groups">
+              <div class="project-group">
+                <div class="project-group-header">
+                  <h3>Completed</h3>
+                  <span>portfolio-ready systems and coursework</span>
                 </div>
-                <div class="feature">
-                  <div class="feature-icon">👁️</div>
-                  <h4>Suspicion feedback</h4>
-                  <p>Monster hearing system drives red vignette feedback so breathing pressure becomes visible and playable.</p>
+
+                <div class="media-project-grid">
+                  <button class="featured-project" type="button" data-project="asphyxia" style="--a:#061a12; --b:#16a34a;">
+                    <div class="project-image">
+                      <img src="assets/asphyxia-cover.jpg" alt="Project Asphyxia screenshot" onerror="this.style.display='none'" />
+                      <div class="image-placeholder"><strong>Project Asphyxia</strong><span>assets/asphyxia-cover.jpg</span></div>
+                    </div>
+                    <div class="project-body">
+                      <p class="project-kicker">Visual case study</p>
+                      <h3>Breath-controlled VR horror for Meta Quest 3</h3>
+                      <p>MFCC + LSTM breath detection runs inside Unity Sentis and controls monster suspicion, oxygen, toxicity and hallucination systems.</p>
+                      <span class="open-label">Open video + visuals →</span>
+                    </div>
+                  </button>
+
+                  <button class="featured-project" type="button" data-project="roboticArm" style="--a:#3b2618; --b:#d97706;">
+                    <div class="project-image">
+                      <img src="assets/robot-arm-cover.jpg" alt="Robotic arm build photo" onerror="this.style.display='none'" />
+                      <div class="image-placeholder"><strong>Robotic Arm</strong><span>assets/robot-arm-cover.jpg</span></div>
+                    </div>
+                    <div class="project-body">
+                      <p class="project-kicker">Visual case study</p>
+                      <h3>3D-printed pick-and-place arm</h3>
+                      <p>Arduino-controlled servo and stepper system using PCA9685, A4988, NEMA 17 base rotation and inverse kinematics.</p>
+                      <span class="open-label">Open video + visuals →</span>
+                    </div>
+                  </button>
                 </div>
-                <div class="feature">
-                  <div class="feature-icon">☣️</div>
-                  <h4>Toxicity + hallucinations</h4>
-                  <p>Oxygen and toxicity systems trigger desaturation, chromatic aberration, film grain, flickering lights, whispers, and shadow scares.</p>
+
+                <div class="description-grid">
+                  <article class="text-project-card">
+                    <p class="project-kicker">Vision systems</p>
+                    <h4>Image Processing & Computer Vision Coursework</h4>
+                    <p>Classical computer vision pipeline covering object detection, stereo geometry and 3D reconstruction.</p>
+                    <ul>
+                      <li>Viola-Jones dartboard detector with colour thresholding and Hough circles.</li>
+                      <li>Epipolar lines, correspondence matching and triangulation.</li>
+                      <li>3D sphere position and radius estimation under noisy camera pose.</li>
+                    </ul>
+                  </article>
+
+                  <article class="text-project-card">
+                    <p class="project-kicker">ML coursework</p>
+                    <h4>Machine Learning Coursework</h4>
+                    <p>Implemented and compared core ML methods across classification, clustering, regression and sequence modelling.</p>
+                    <ul>
+                      <li>K-Means, GMMs, neural networks and HMMs.</li>
+                      <li>Deterministic and probabilistic approaches, including EM-style methods.</li>
+                      <li>Bayesian modelling explored using PyMC.</li>
+                    </ul>
+                  </article>
                 </div>
-                <div class="feature">
-                  <div class="feature-icon">🎒</div>
-                  <h4>Diegetic VR inventory</h4>
-                  <p>Grab to store items invisibly, then cycle them back into the player’s hand with controller input through XR Interaction Toolkit.</p>
+              </div>
+
+              <div class="project-group">
+                <div class="project-group-header">
+                  <h3>Work in progress</h3>
+                  <span>larger builds still being developed and documented</span>
+                </div>
+
+                <div class="description-grid">
+                  <article class="text-project-card wip">
+                    <p class="project-kicker">C++ graphics</p>
+                    <h4>Computer Graphics Renderer</h4>
+                    <p>A software rasteriser built from scratch in C++ using SDL2 and GLM, without relying on OpenGL or DirectX for the core renderer.</p>
+                    <ul>
+                      <li>OBJ/MTL parsing, vertex transforms and perspective projection.</li>
+                      <li>Triangle rasterisation, texture mapping and depth buffering.</li>
+                      <li>Coordinate transforms, clipping and camera projection.</li>
+                    </ul>
+                  </article>
                 </div>
               </div>
-
-              <div class="pipeline" aria-label="Breath pipeline">
-                <div class="pipe-step"><div class="pipe-num">1</div><p><strong>Microphone input</strong> is sampled in real time from the VR runtime.</p></div>
-                <div class="pipe-step"><div class="pipe-num">2</div><p><strong>MFCC features</strong> are extracted to match the training pipeline as closely as possible.</p></div>
-                <div class="pipe-step"><div class="pipe-num">3</div><p><strong>LSTM inference</strong> classifies breath/noise states using a Unity-imported ONNX model.</p></div>
-                <div class="pipe-step"><div class="pipe-num">4</div><p><strong>Gameplay systems</strong> convert confidence, RMS gates, and breath state into suspicion, oxygen, and hallucination effects.</p></div>
-              </div>
             </div>
-          </div>
+          </section>
 
-          <div class="stats">
-            <div class="stat"><strong>4</strong><span>audio classes in the current model</span></div>
-            <div class="stat"><strong>~1k+</strong><span>recordings used alongside speech data</span></div>
-            <div class="stat"><strong>0.95</strong><span>confidence threshold for inhale detection</span></div>
-            <div class="stat"><strong>Quest 3</strong><span>standalone target platform</span></div>
-          </div>
-        </article>
-
-        <article class="project-card" style="--glow: rgba(255, 184, 107, 1);">
-          <div class="project-layout">
-            <div>
-              <div class="project-meta">
-                <span class="tag">Arduino</span>
-                <span class="tag">PCA9685</span>
-                <span class="tag">A4988</span>
-                <span class="tag">Inverse Kinematics</span>
-                <span class="tag">3D Printing</span>
-              </div>
-              <h3>3D-printed robotic pick-and-place arm</h3>
-              <p class="project-copy">
-                This project is a physical robotic arm built around iterative hardware testing. The system combines a NEMA 17 stepper-driven base,
-                six MG996R servo joints through a PCA9685 servo driver, and an analytical 2-link inverse kinematics solver for reaching target positions.
-              </p>
-              <p class="project-copy" style="margin-top:14px;">
-                The goal is to progressively add capability: first reliable joint control, then coordinate-based movement, then Pixy2 camera integration for object detection and picking.
-                The project mixes mechanical measurement, firmware, calibration, electronics, and practical debugging.
-              </p>
-              <div class="project-actions">
-                <a class="btn btn-primary" href="#process">View build process</a>
-                <a class="btn btn-secondary" href="#contact">Ask about the arm</a>
-              </div>
+          <section id="skills">
+            <div class="section-head">
+              <h2>Technical Skills</h2>
+              <div class="section-line"></div>
+              <span class="section-note">tools I build with</span>
             </div>
 
-            <div class="feature-grid">
-              <div class="feature">
-                <div class="feature-icon">🦾</div>
-                <h4>Servo joint control</h4>
-                <p>Six MG996R servos controlled through PCA9685 channels, with mirrored shoulder servos treated as one revolute joint.</p>
-              </div>
-              <div class="feature">
-                <div class="feature-icon">⚙️</div>
-                <h4>Stepper base rotation</h4>
-                <p>NEMA 17 base motor through an A4988 driver using raw step commands for predictable physical testing.</p>
-              </div>
-              <div class="feature">
-                <div class="feature-icon">📐</div>
-                <h4>Measured arm geometry</h4>
-                <p>Base height 142mm, shoulder-to-elbow link 185mm, and elbow-to-wrist link 85mm used for IK calculations.</p>
-              </div>
-              <div class="feature">
-                <div class="feature-icon">📷</div>
-                <h4>Future vision loop</h4>
-                <p>Pixy2 integration planned for pixel-to-world coordinate mapping and camera-guided picking.</p>
+            <div class="skills-panel">
+              <p>A compact stack across ML, VR, computer vision, web deployment, embedded robotics and graphics.</p>
+              <div class="skill-cloud">
+                <span class="pill">Python</span>
+                <span class="pill">PyTorch</span>
+                <span class="pill">ONNX</span>
+                <span class="pill">Unity Sentis</span>
+                <span class="pill">C#</span>
+                <span class="pill">Unity</span>
+                <span class="pill">OpenCV</span>
+                <span class="pill">Arduino</span>
+                <span class="pill">C/C++</span>
+                <span class="pill">JavaScript</span>
+                <span class="pill">SQL</span>
+                <span class="pill">Docker</span>
+                <span class="pill">AWS</span>
+                <span class="pill">PCA9685</span>
+                <span class="pill">A4988</span>
+                <span class="pill">Inverse Kinematics</span>
+                <span class="pill">SDL2</span>
+                <span class="pill">GLM</span>
+                <span class="pill">Software Rasterisation</span>
               </div>
             </div>
-          </div>
-
-          <div class="stats">
-            <div class="stat"><strong>6</strong><span>servo joints through PCA9685</span></div>
-            <div class="stat"><strong>200</strong><span>full steps per NEMA 17 revolution</span></div>
-            <div class="stat"><strong>185mm</strong><span>upper arm link length</span></div>
-            <div class="stat"><strong>85mm</strong><span>forearm link length</span></div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="skills">
-      <div class="container">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Technical stack</p>
-            <h2>What I use to build.</h2>
-          </div>
-          <p class="section-note">My strongest work is at the boundary between software models and real-time interactive systems.</p>
+          </section>
         </div>
-
-        <div class="skills-grid">
-          <div class="skill-card">
-            <h3>XR / Unity</h3>
-            <ul>
-              <li>Unity URP</li>
-              <li>Meta Quest 3 deployment</li>
-              <li>OpenXR / XR Interaction Toolkit</li>
-              <li>Additive scene architecture</li>
-              <li>World-space VR UI</li>
-            </ul>
-          </div>
-          <div class="skill-card">
-            <h3>ML / Audio</h3>
-            <ul>
-              <li>PyTorch model training</li>
-              <li>MFCC feature extraction</li>
-              <li>LSTM sequence models</li>
-              <li>ONNX export</li>
-              <li>Unity Sentis inference</li>
-            </ul>
-          </div>
-          <div class="skill-card">
-            <h3>Robotics</h3>
-            <ul>
-              <li>Arduino firmware</li>
-              <li>PCA9685 servo control</li>
-              <li>A4988 stepper control</li>
-              <li>Inverse kinematics</li>
-              <li>Hardware calibration</li>
-            </ul>
-          </div>
-          <div class="skill-card">
-            <h3>Engineering habits</h3>
-            <ul>
-              <li>Physical testing loops</li>
-              <li>Debugging build vs editor issues</li>
-              <li>Prefab ownership for teams</li>
-              <li>Simple reliable architecture</li>
-              <li>Documentation through iteration</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="process">
-      <div class="container">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">How I work</p>
-            <h2>Debugging from the real system backwards.</h2>
-          </div>
-          <p class="section-note">The most important lessons came from the gaps between theory, editor behaviour, hardware behaviour, and deployed builds.</p>
-        </div>
-
-        <div class="timeline">
-          <div class="timeline-item">
-            <div class="time">01</div>
-            <div>
-              <h3>Prototype the mechanic first</h3>
-              <p>I start with the player-facing behaviour: breath raises suspicion, oxygen creates pressure, the arm reaches a target, or the gripper closes. Once the behaviour feels real, I refine the architecture underneath it.</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="time">02</div>
-            <div>
-              <h3>Test in the target environment</h3>
-              <p>For VR, that means standalone Quest builds as well as editor testing. For robotics, that means physical servo and stepper tests instead of trusting abstractions too early.</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="time">03</div>
-            <div>
-              <h3>Prefer clear state changes</h3>
-              <p>Systems are easier to debug when important state changes go through one path. Direct field writes, hidden inspector overrides, and unreliable input bindings can silently break otherwise correct code.</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="time">04</div>
-            <div>
-              <h3>Calibrate from evidence</h3>
-              <p>Whether aligning MFCC features between Python and C#, tuning servo limits, or fixing Guardian offset spawn issues, I treat mismatches as measurement problems first.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact">
-      <div class="container">
-        <div class="contact-card">
-          <div>
-            <p class="section-kicker">Contact</p>
-            <h2>Interested in XR, ML, robotics, or applied systems?</h2>
-            <p>
-              I’m especially interested in roles and collaborations where software has to work under real constraints: real-time input,
-              embodied interaction, hardware limits, accessibility, and deployment outside a perfect development environment.
-            </p>
-          </div>
-          <div class="hero-actions" style="margin-top:0;">
-            <a class="btn btn-primary" href="mailto:your-email@example.com">Email me</a>
-            <a class="btn btn-secondary" href="https://github.com/justice-123" target="_blank" rel="noreferrer">GitHub</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-inner">
-      <span>© <span id="year"></span> Justice Mintah. Built as a technical project portfolio.</span>
-      <span>BSc Computer Science · University of Bristol · Expected June 2026</span>
+      </main>
     </div>
-  </footer>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h2 id="modalTitle"></h2>
+          <p id="modalSubtitle"></p>
+        </div>
+        <button class="close-button" id="closeModal" aria-label="Close project popup">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="media-grid">
+          <div class="video-wrap">
+            <iframe id="modalVideo" title="Project video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+          <div class="gallery" id="modalGallery" aria-label="Project image gallery"></div>
+        </div>
+        <div class="modal-copy">
+          <div>
+            <h3>Project overview</h3>
+            <p id="modalOverview"></p>
+          </div>
+          <div>
+            <h3>What I built</h3>
+            <ul id="modalBullets"></ul>
+          </div>
+        </div>
+        <p class="note">
+          Add real images by creating an <strong>assets</strong> folder next to this HTML file. Replace the placeholder image names and YouTube IDs in the JavaScript with your real media.
+        </p>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const canvas = document.getElementById('gas-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    function resize() {
-      canvas.width = window.innerWidth * window.devicePixelRatio;
-      canvas.height = window.innerHeight * window.devicePixelRatio;
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-      createParticles();
-    }
-
-    function createParticles() {
-      const count = Math.min(95, Math.floor(window.innerWidth / 16));
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        r: 20 + Math.random() * 80,
-        vx: -0.12 + Math.random() * 0.24,
-        vy: -0.22 - Math.random() * 0.35,
-        alpha: 0.025 + Math.random() * 0.075
-      }));
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      for (const p of particles) {
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-        gradient.addColorStop(0, `rgba(104, 255, 156, ${p.alpha})`);
-        gradient.addColorStop(0.55, `rgba(32, 215, 107, ${p.alpha * 0.45})`);
-        gradient.addColorStop(1, 'rgba(104, 255, 156, 0)');
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.y + p.r < 0) {
-          p.y = window.innerHeight + p.r;
-          p.x = Math.random() * window.innerWidth;
-        }
-        if (p.x + p.r < 0) p.x = window.innerWidth + p.r;
-        if (p.x - p.r > window.innerWidth) p.x = -p.r;
+    const projects = {
+      asphyxia: {
+        title: "Project Asphyxia / Real-Time Breath Detection",
+        subtitle: "Python · PyTorch · ONNX · Unity Sentis · C# · Meta Quest 3",
+        videoId: "YOUR_ASPHYXIA_VIDEO_ID",
+        images: ["assets/asphyxia-gameplay.jpg", "assets/asphyxia-breath-ui.jpg", "assets/asphyxia-pipeline.jpg"],
+        overview: "Project Asphyxia is a standalone Meta Quest 3 VR horror game set in a hospital environment. The main mechanic uses real-time breath detection: if the player breathes too loudly, the monster's suspicion rises; if the player stops breathing, toxicity rises and hallucination effects begin.",
+        bullets: [
+          "Designed and trained an MFCC + LSTM model to classify inhale, exhale, silence and noise.",
+          "Exported the model to ONNX and ran inference in Unity using Sentis.",
+          "Built monster hearing, oxygen, toxicity, hallucination, shadow scare and diegetic VR inventory systems.",
+          "Tuned RMS gating, confidence thresholds and speech/noise filtering to reduce false positives.",
+          "Designed the game around wheelchair-accessible VR interaction."
+        ]
+      },
+      roboticArm: {
+        title: "3D-Printed Robotic Pick-and-Place Arm",
+        subtitle: "Arduino · PCA9685 · A4988 · NEMA 17 · Servo Control · Inverse Kinematics",
+        videoId: "YOUR_ROBOT_ARM_VIDEO_ID",
+        images: ["assets/robot-arm-build.jpg", "assets/robot-arm-wiring.jpg", "assets/robot-arm-test.jpg"],
+        overview: "A hands-on robotic arm project focused on progressively adding capabilities: servo joint control, stepper-driven base rotation, inverse kinematics, and eventually Pixy2 camera integration for coordinate-based object picking.",
+        bullets: [
+          "Controlled six MG996R servo joints using a PCA9685 servo driver over I2C.",
+          "Integrated a NEMA 17 stepper motor base using an A4988 driver and raw serial step commands.",
+          "Measured physical geometry and implemented a 2-link inverse kinematics approach.",
+          "Handled mirrored shoulder servos, servo limits, I2C addressing, startup positioning and calibration.",
+          "Planned Pixy2 camera integration for mapping detected objects to real-world arm coordinates."
+        ]
       }
-      requestAnimationFrame(draw);
+    };
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalSubtitle = document.getElementById("modalSubtitle");
+    const modalVideo = document.getElementById("modalVideo");
+    const modalOverview = document.getElementById("modalOverview");
+    const modalBullets = document.getElementById("modalBullets");
+    const modalGallery = document.getElementById("modalGallery");
+    const closeModal = document.getElementById("closeModal");
+
+    function openProject(projectKey) {
+      const project = projects[projectKey];
+      if (!project) return;
+
+      modalTitle.textContent = project.title;
+      modalSubtitle.textContent = project.subtitle;
+      modalOverview.textContent = project.overview;
+      modalVideo.src = `https://www.youtube.com/embed/${project.videoId}`;
+      modalBullets.innerHTML = "";
+      modalGallery.innerHTML = "";
+
+      project.images.forEach((imagePath) => {
+        const slot = document.createElement("div");
+        slot.className = "gallery-slot";
+
+        const img = document.createElement("img");
+        img.src = imagePath;
+        img.alt = `Project image: ${imagePath}`;
+        img.onerror = () => img.style.display = "none";
+
+        const label = document.createElement("span");
+        label.textContent = imagePath;
+
+        slot.appendChild(img);
+        slot.appendChild(label);
+        modalGallery.appendChild(slot);
+      });
+
+      project.bullets.forEach((bullet) => {
+        const li = document.createElement("li");
+        li.textContent = bullet;
+        modalBullets.appendChild(li);
+      });
+
+      modalBackdrop.classList.add("open");
+      document.body.style.overflow = "hidden";
     }
 
-    document.getElementById('year').textContent = new Date().getFullYear();
-    window.addEventListener('resize', resize);
-    resize();
-    draw();
+    function closeProject() {
+      modalBackdrop.classList.remove("open");
+      modalVideo.src = "";
+      document.body.style.overflow = "";
+    }
+
+    document.querySelectorAll("[data-project]").forEach((button) => {
+      button.addEventListener("click", () => openProject(button.dataset.project));
+    });
+
+    closeModal.addEventListener("click", closeProject);
+    modalBackdrop.addEventListener("click", (event) => {
+      if (event.target === modalBackdrop) closeProject();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeProject();
+    });
   </script>
 </body>
 </html>
