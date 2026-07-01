@@ -628,11 +628,11 @@
       padding: 22px;
     }
 
-    .media-grid {
+    .video-row {
       display: grid;
-      grid-template-columns: 1.35fr 0.65fr;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .video-wrap {
@@ -651,11 +651,13 @@
 
     .gallery {
       display: grid;
-      gap: 11px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .gallery-slot {
-      min-height: 90px;
+      min-height: 220px;
       border: 1px dashed rgba(18, 18, 18, 0.38);
       border-radius: 16px;
       background: #fff;
@@ -717,7 +719,6 @@
     @media (max-width: 920px) {
       header,
       .project-board,
-      .media-grid,
       .modal-copy {
         grid-template-columns: 1fr;
       }
@@ -846,7 +847,7 @@
                 <div class="media-project-grid">
                   <button class="featured-project" type="button" data-project="asphyxia" style="--a:#061a12; --b:#16a34a;">
                     <div class="project-image">
-                      <img src="assets/asphyxia-cover.jpg" alt="Project Asphyxia screenshot" onerror="this.style.display='none'" />
+                      <img src="gameimages/titlescreen.png" alt="Project Asphyxia title screen" onerror="this.style.display='none'" />
                       <div class="image-placeholder"><strong>Project Asphyxia</strong><span>assets/asphyxia-cover.jpg</span></div>
                     </div>
                     <div class="project-body">
@@ -965,12 +966,8 @@
         <button class="close-button" id="closeModal" aria-label="Close project popup">×</button>
       </div>
       <div class="modal-body">
-        <div class="media-grid">
-          <div class="video-wrap">
-            <iframe id="modalVideo" title="Project video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-          </div>
-          <div class="gallery" id="modalGallery" aria-label="Project image gallery"></div>
-        </div>
+        <div class="video-row" id="modalVideos"></div>
+        <div class="gallery" id="modalGallery" aria-label="Project image gallery"></div>
         <div class="modal-copy">
           <div>
             <h3>Project overview</h3>
@@ -993,8 +990,8 @@
       asphyxia: {
         title: "Project Asphyxia / Real-Time Breath Detection",
         subtitle: "Python · PyTorch · ONNX · Unity Sentis · C# · Meta Quest 3",
-        videoId: "0ZBkigv2GE0",
-        images: ["assets/asphyxia-gameplay.jpg", "assets/asphyxia-breath-ui.jpg", "assets/asphyxia-pipeline.jpg"],
+        videos: ["0ZBkigv2GE0", "d8DsTOz6Bpk"],
+        images: ["gameimages/scarygirl.png", "gameimages/scarymonster.png"],
         overview: "Project Asphyxia is a standalone Meta Quest 3 VR horror game set in a hospital environment. The main mechanic uses real-time breath detection: if the player breathes too loudly, the monster's suspicion rises; if the player stops breathing, toxicity rises and hallucination effects begin.",
         bullets: [
           "Designed and trained an MFCC + LSTM model to classify inhale, exhale, silence and noise.",
@@ -1007,7 +1004,7 @@
       roboticArm: {
         title: "3D-Printed Robotic Pick-and-Place Arm",
         subtitle: "Arduino · PCA9685 · A4988 · NEMA 17 · Servo Control · Inverse Kinematics",
-        videoId: "YOUR_ROBOT_ARM_VIDEO_ID",
+        videos: ["YOUR_ROBOT_ARM_VIDEO_ID"],
         images: ["assets/robot-arm-build.jpg", "assets/robot-arm-wiring.jpg", "assets/robot-arm-test.jpg"],
         overview: "A hands-on robotic arm project focused on progressively adding capabilities: servo joint control, stepper-driven base rotation, inverse kinematics, and eventually Pixy2 camera integration for coordinate-based object picking.",
         bullets: [
@@ -1023,7 +1020,7 @@
     const modalBackdrop = document.getElementById("modalBackdrop");
     const modalTitle = document.getElementById("modalTitle");
     const modalSubtitle = document.getElementById("modalSubtitle");
-    const modalVideo = document.getElementById("modalVideo");
+    const modalVideos = document.getElementById("modalVideos");
     const modalOverview = document.getElementById("modalOverview");
     const modalBullets = document.getElementById("modalBullets");
     const modalGallery = document.getElementById("modalGallery");
@@ -1036,9 +1033,23 @@
       modalTitle.textContent = project.title;
       modalSubtitle.textContent = project.subtitle;
       modalOverview.textContent = project.overview;
-      modalVideo.src = `https://www.youtube.com/embed/${project.videoId}`;
+      modalVideos.innerHTML = "";
       modalBullets.innerHTML = "";
       modalGallery.innerHTML = "";
+
+      project.videos.forEach((videoId, index) => {
+        const wrap = document.createElement("div");
+        wrap.className = "video-wrap";
+
+        const iframe = document.createElement("iframe");
+        iframe.title = index === 0 ? "Project trailer" : "Project demo";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.allowFullscreen = true;
+        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+
+        wrap.appendChild(iframe);
+        modalVideos.appendChild(wrap);
+      });
 
       project.images.forEach((imagePath) => {
         const slot = document.createElement("div");
@@ -1069,7 +1080,7 @@
 
     function closeProject() {
       modalBackdrop.classList.remove("open");
-      modalVideo.src = "";
+      modalVideos.innerHTML = "";
       document.body.style.overflow = "";
     }
 
