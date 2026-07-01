@@ -847,7 +847,7 @@
                 <div class="media-project-grid">
                   <button class="featured-project" type="button" data-project="asphyxia" style="--a:#061a12; --b:#16a34a;">
                     <div class="project-image">
-                      <img src="gameimages/titlescreen.png" alt="Project Asphyxia title screen" onerror="this.style.display='none'" />
+                      <img src="gameimages/titlescreen.png" alt="Project Asphyxia title screen" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'" />
                       <div class="image-placeholder"><strong>Project Asphyxia</strong><span>assets/asphyxia-cover.jpg</span></div>
                     </div>
                     <div class="project-body">
@@ -860,7 +860,7 @@
 
                   <button class="featured-project" type="button" data-project="roboticArm" style="--a:#3b2618; --b:#d97706;">
                     <div class="project-image">
-                      <img src="assets/robot-arm-cover.jpg" alt="Robotic arm build photo" onerror="this.style.display='none'" />
+                      <img src="assets/robot-arm-cover.jpg" alt="Robotic arm build photo" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'" />
                       <div class="image-placeholder"><strong>Robotic Arm</strong><span>assets/robot-arm-cover.jpg</span></div>
                     </div>
                     <div class="project-body">
@@ -1058,6 +1058,7 @@
         const img = document.createElement("img");
         img.src = imagePath;
         img.alt = `Project image: ${imagePath}`;
+        img.onload = () => label.style.display = "none";
         img.onerror = () => img.style.display = "none";
 
         const label = document.createElement("span");
