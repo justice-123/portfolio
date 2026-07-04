@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Justice Mintah | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <meta name="description" content="Portfolio for Justice Mintah, Computer Science student at the University of Bristol building VR, machine learning, computer vision, robotics and graphics projects." />
   <style>
     :root {
@@ -13,7 +16,7 @@
       --muted: #707070;
       --line: #1a1a1a;
       --soft-line: rgba(16, 16, 16, 0.12);
-      --accent: #101010;
+      --accent: #0a57ff;
       --accent-2: #101010;
       --warm: #101010;
       --danger: #101010;
@@ -34,7 +37,7 @@
       min-height: 100vh;
       background: var(--bg);
       color: var(--ink);
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
       line-height: 1.5;
     }
 
@@ -86,7 +89,8 @@
     }
 
     .tiny-nav a:hover {
-      background: var(--ink);
+      background: var(--accent);
+      border-color: var(--accent);
       color: var(--paper);
     }
 
@@ -101,11 +105,11 @@
 
     .stamp {
       display: inline-flex;
-      border: 1px solid var(--line);
-      color: var(--ink);
+      border: 1px solid var(--accent);
+      color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 0.2em;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
       font-size: 0.68rem;
       font-weight: 700;
       padding: 5px 10px;
@@ -143,7 +147,7 @@
       border-radius: 999px;
       background: #fff;
       padding: 6px 9px;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
       font-size: 0.78rem;
       font-weight: 800;
     }
@@ -163,7 +167,7 @@
       position: absolute;
       inset: 0 0 auto;
       height: 3px;
-      background: var(--ink);
+      background: var(--accent);
     }
 
     .intro-panel h2 {
@@ -203,13 +207,14 @@
       border-radius: 999px;
       background: #fff;
       padding: 6px 9px;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
       font-size: 0.78rem;
       font-weight: 800;
     }
 
     .contact-row a:hover {
-      background: var(--ink);
+      background: var(--accent);
+      border-color: var(--accent);
       color: var(--paper);
     }
 
@@ -265,13 +270,14 @@
       text-align: left;
       cursor: pointer;
       overflow: hidden;
-      transition: transform 170ms ease, box-shadow 170ms ease;
+      transition: transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease;
     }
 
     .featured-project:hover,
     .project-card:hover {
       transform: translateY(-4px);
       box-shadow: var(--shadow);
+      border-color: var(--accent);
     }
 
     .featured-project {
@@ -322,7 +328,7 @@
       height: calc(100% - 30px);
       border: 1px dashed rgba(16, 16, 16, 0.22);
       border-radius: 18px;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
     }
 
     .image-placeholder strong {
@@ -341,7 +347,7 @@
 
     .project-kicker {
       color: var(--accent);
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       font-weight: 900;
@@ -368,7 +374,7 @@
 
     .open-label {
       display: inline-flex;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
       font-size: 0.82rem;
       font-weight: 900;
       color: var(--ink);
@@ -391,7 +397,7 @@
     }
 
     .date-pill {
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
       font-weight: 800;
       font-size: 0.78rem;
       color: var(--accent);
@@ -449,7 +455,7 @@
       border-radius: 999px;
       padding: 5px 8px;
       background: #fff;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
       font-size: 0.78rem;
       font-weight: 700;
     }
@@ -487,6 +493,22 @@
       color: var(--muted);
       font-style: italic;
       font-size: 0.9rem;
+    }
+
+    .project-group.is-complete {
+      border-color: var(--accent);
+    }
+
+    .project-group.is-complete .project-group-header {
+      border-bottom-color: rgba(10, 87, 255, 0.35);
+    }
+
+    .project-group.is-complete .project-group-header h3 {
+      color: var(--accent);
+    }
+
+    .project-group.is-wip .project-kicker {
+      color: var(--muted);
     }
 
     .media-project-grid {
@@ -604,7 +626,7 @@
       cursor: pointer;
       font-size: 1.35rem;
       line-height: 1;
-      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
     }
 
     .modal-body {
@@ -805,7 +827,7 @@
             </div>
 
             <div class="project-groups">
-              <div class="project-group">
+              <div class="project-group is-complete">
                 <div class="project-group-header">
                   <h3>Completed</h3>
                   <span>portfolio-ready systems and coursework</span>
@@ -833,7 +855,7 @@
                     <div class="project-body">
                       <p class="project-kicker">Visual case study</p>
                       <h3>3D-printed pick-and-place arm</h3>
-                      <p>Arduino-controlled servo and stepper system using PCA9685, A4988, NEMA 17 base rotation and inverse kinematics.</p>
+                      <p>Teleoperated over Telegram with a custom-trained YOLOv2 vision model and OpenClaw command interpreter, driving a PCA9685 servo and NEMA 17 stepper arm with inverse kinematics.</p>
                       <span class="open-label">Open video + visuals →</span>
                     </div>
                   </button>
@@ -864,7 +886,7 @@
                 </div>
               </div>
 
-              <div class="project-group">
+              <div class="project-group is-wip">
                 <div class="project-group-header">
                   <h3>Work in progress</h3>
                   <span>larger builds still being developed and documented</span>
@@ -903,7 +925,10 @@
                 <span class="pill">C#</span>
                 <span class="pill">Unity</span>
                 <span class="pill">OpenCV</span>
+                <span class="pill">YOLOv2</span>
                 <span class="pill">Arduino</span>
+                <span class="pill">OpenClaw</span>
+                <span class="pill">Telegram Bot API</span>
                 <span class="pill">C/C++</span>
                 <span class="pill">JavaScript</span>
                 <span class="pill">SQL</span>
@@ -967,16 +992,17 @@
       },
       roboticArm: {
         title: "3D-Printed Robotic Pick-and-Place Arm",
-        subtitle: "Arduino · PCA9685 · A4988 · NEMA 17 · Servo Control · Inverse Kinematics",
+        subtitle: "Arduino · Custom YOLOv2 · OpenClaw · Telegram Bot · PCA9685 · Inverse Kinematics",
         videos: ["WvHrwvKMdk4", "U6Fd68Kke20"],
         images: ["armImages/arm%20abstraction.png", "armImages/arm%20urdf.png"],
-        overview: "A hands-on robotic arm project focused on progressively adding capabilities: servo joint control, stepper-driven base rotation, inverse kinematics, and eventually Pixy2 camera integration for coordinate-based object picking.",
+        overview: "A 3D-printed pick-and-place arm that can be teleoperated remotely over Telegram. A custom-trained YOLOv2 model detects target objects from the robot's webcam feed, while the OpenClaw command interpreter turns chat messages into arm movements — letting a user pick and place objects from their phone while watching a live robot-POV video stream.",
         bullets: [
-          "Controlled six MG996R servo joints using a PCA9685 servo driver over I2C.",
-          "Integrated a NEMA 17 stepper motor base using an A4988 driver and raw serial step commands.",
-          "Measured physical geometry and implemented a 2-link inverse kinematics approach.",
-          "Handled mirrored shoulder servos, servo limits, I2C addressing, startup positioning and calibration.",
-          "Planned Pixy2 camera integration for mapping detected objects to real-world arm coordinates."
+          "Controlled six MG996R servo joints via a PCA9685 driver over I2C, with a NEMA 17 / A4988 stepper base for rotation.",
+          "Measured physical geometry and implemented a 6-link inverse kinematics approach, handling mirrored shoulder servos, servo limits, I2C addressing and calibration.",
+          "Trained a custom YOLOv2 model to detect target objects from the robot's webcam (robot-POV) feed.",
+          "Built a Telegram teleoperation layer so a user can drive the arm from their phone — a Telegram bot plus an OpenClaw command interpreter convert chat messages into arm actions.",
+          "Added a Minimax M2.7 model in the cloud control layer to interpret natural-language user commands.",
+          "Bridged the cloud to the hardware through a Field PC acting as a serial communication bridge and webcam server, streaming live robot-POV video back to the Telegram app."
         ]
       }
     };
