@@ -7,17 +7,17 @@
   <meta name="description" content="Portfolio for Justice Mintah, Computer Science student at the University of Bristol building VR, machine learning, computer vision, robotics and graphics projects." />
   <style>
     :root {
-      --bg: #efeee8;
-      --paper: #fffdf7;
-      --ink: #121212;
-      --muted: #5f5a50;
-      --line: #1c1c1c;
-      --soft-line: rgba(18, 18, 18, 0.14);
-      --accent: #0a57ff;
-      --accent-2: #0b8f53;
-      --warm: #ffb000;
-      --danger: #b91c1c;
-      --shadow: 0 24px 70px rgba(18, 18, 18, 0.13);
+      --bg: #f5f5f3;
+      --paper: #ffffff;
+      --ink: #101010;
+      --muted: #707070;
+      --line: #1a1a1a;
+      --soft-line: rgba(16, 16, 16, 0.12);
+      --accent: #101010;
+      --accent-2: #101010;
+      --warm: #101010;
+      --danger: #101010;
+      --shadow: 0 16px 44px rgba(16, 16, 16, 0.08);
     }
 
     * {
@@ -32,16 +32,10 @@
 
     body {
       min-height: 100vh;
-      background:
-        linear-gradient(90deg, rgba(18,18,18,0.035) 1px, transparent 1px),
-        linear-gradient(rgba(18,18,18,0.035) 1px, transparent 1px),
-        radial-gradient(circle at 8% 8%, rgba(10, 87, 255, 0.12), transparent 25%),
-        radial-gradient(circle at 92% 18%, rgba(11, 143, 83, 0.10), transparent 28%),
-        var(--bg);
-      background-size: 34px 34px, 34px 34px, auto, auto, auto;
+      background: var(--bg);
       color: var(--ink);
       font-family: Georgia, "Times New Roman", serif;
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
     a {
@@ -60,7 +54,7 @@
 
     .paper {
       background: var(--paper);
-      border: 2px solid var(--line);
+      border: 1px solid var(--line);
       border-radius: 28px;
       box-shadow: var(--shadow);
       overflow: hidden;
@@ -71,7 +65,7 @@
       justify-content: center;
       align-items: center;
       padding: 14px 22px;
-      border-bottom: 2px solid var(--line);
+      border-bottom: 1px solid var(--line);
       background: rgba(255, 255, 255, 0.42);
     }
 
@@ -101,22 +95,21 @@
       grid-template-columns: 1.2fr 0.8fr;
       gap: 24px;
       padding: 24px 42px 22px;
-      border-bottom: 2px solid var(--line);
+      border-bottom: 1px solid var(--line);
       position: relative;
     }
 
     .stamp {
       display: inline-flex;
-      transform: rotate(-1.5deg);
-      border: 2px solid var(--danger);
-      color: var(--danger);
+      border: 1px solid var(--line);
+      color: var(--ink);
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.2em;
       font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-      font-size: 0.7rem;
-      font-weight: 900;
-      padding: 4px 8px;
-      margin-bottom: 12px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      margin-bottom: 14px;
     }
 
     h1 {
@@ -156,7 +149,7 @@
     }
 
     .intro-panel {
-      border: 2px solid var(--line);
+      border: 1px solid var(--line);
       border-radius: 22px;
       padding: 18px;
       background: #fff;
@@ -169,8 +162,8 @@
       content: "";
       position: absolute;
       inset: 0 0 auto;
-      height: 9px;
-      background: repeating-linear-gradient(90deg, var(--accent), var(--accent) 24px, var(--warm) 24px, var(--warm) 48px, var(--accent-2) 48px, var(--accent-2) 72px);
+      height: 3px;
+      background: var(--ink);
     }
 
     .intro-panel h2 {
@@ -248,8 +241,8 @@
     }
 
     .section-line {
-      height: 2px;
-      background: var(--line);
+      height: 1px;
+      background: var(--soft-line);
     }
 
     .section-note {
@@ -267,7 +260,7 @@
 
     .featured-project,
     .project-card {
-      border: 2px solid var(--line);
+      border: 1px solid var(--line);
       background: #fff;
       text-align: left;
       cursor: pointer;
@@ -277,7 +270,7 @@
 
     .featured-project:hover,
     .project-card:hover {
-      transform: translateY(-4px) rotate(-0.4deg);
+      transform: translateY(-4px);
       box-shadow: var(--shadow);
     }
 
@@ -302,9 +295,7 @@
       display: grid;
       place-items: center;
       overflow: hidden;
-      background:
-        linear-gradient(135deg, var(--a), var(--b)),
-        #ddd;
+      background: #ededed;
     }
 
     .project-card .project-image {
@@ -325,13 +316,12 @@
       display: grid;
       place-items: center;
       text-align: center;
-      color: #fff;
+      color: var(--muted);
       padding: 20px;
       width: calc(100% - 30px);
       height: calc(100% - 30px);
-      border: 1px dashed rgba(255, 255, 255, 0.55);
+      border: 1px dashed rgba(16, 16, 16, 0.22);
       border-radius: 18px;
-      text-shadow: 0 3px 18px rgba(0, 0, 0, 0.35);
       font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     }
 
@@ -442,7 +432,7 @@
     }
 
     .skills-panel {
-      border: 2px solid var(--line);
+      border: 1px solid var(--line);
       border-radius: 22px;
       background: #fff;
       padding: 18px;
@@ -471,7 +461,7 @@
     }
 
     .project-group {
-      border: 2px solid var(--line);
+      border: 1px solid var(--line);
       border-radius: 26px;
       background: rgba(255, 255, 255, 0.55);
       padding: 18px;
@@ -544,7 +534,7 @@
 
     .text-project-card.wip {
       border-style: dashed;
-      background: #fffaf0;
+      background: #f7f7f6;
     }
 
     @media (max-width: 920px) {
@@ -574,7 +564,7 @@
       overflow: auto;
       background: var(--paper);
       color: var(--ink);
-      border: 2px solid var(--line);
+      border: 1px solid var(--line);
       border-radius: 24px;
       box-shadow: 0 32px 90px rgba(0, 0, 0, 0.42);
     }
@@ -586,8 +576,8 @@
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 18px;
-      background: rgba(255, 253, 247, 0.96);
-      border-bottom: 2px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid var(--line);
       padding: 20px 22px;
       backdrop-filter: blur(10px);
     }
@@ -609,7 +599,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: 2px solid var(--line);
+      border: 1px solid var(--line);
       background: #fff;
       cursor: pointer;
       font-size: 1.35rem;
@@ -630,7 +620,7 @@
 
     .video-wrap {
       aspect-ratio: 16 / 9;
-      border: 2px solid var(--line);
+      border: 1px solid var(--line);
       border-radius: 18px;
       background: #111;
       overflow: hidden;
@@ -822,7 +812,7 @@
                 </div>
 
                 <div class="media-project-grid">
-                  <button class="featured-project" type="button" data-project="asphyxia" style="--a:#061a12; --b:#16a34a;">
+                  <button class="featured-project" type="button" data-project="asphyxia">
                     <div class="project-image">
                       <img src="gameimages/titlescreen.png" alt="Project Asphyxia title screen" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'" />
                       <div class="image-placeholder"><strong>Project Asphyxia</strong></div>
@@ -835,7 +825,7 @@
                     </div>
                   </button>
 
-                  <button class="featured-project" type="button" data-project="roboticArm" style="--a:#3b2618; --b:#d97706;">
+                  <button class="featured-project" type="button" data-project="roboticArm">
                     <div class="project-image">
                       <img src="armImages/armthumbnail.jpeg" alt="Robotic arm build photo" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'" />
                       <div class="image-placeholder"><strong>Robotic Arm</strong></div>
