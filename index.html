@@ -995,14 +995,14 @@
         subtitle: "Arduino · Custom YOLOv2 · OpenClaw · Telegram Bot · PCA9685 · Inverse Kinematics",
         videos: ["WvHrwvKMdk4", "U6Fd68Kke20"],
         images: ["armImages/arm%20abstraction.png", "armImages/arm%20urdf.png"],
-        overview: "A 3D-printed pick-and-place arm that can be teleoperated remotely over Telegram. A custom-trained YOLOv2 model detects target objects from the robot's webcam feed, while the OpenClaw command interpreter turns chat messages into arm movements — letting a user pick and place objects from their phone while watching a live robot-POV video stream.",
+        overview: "A 3D printed pick and place arm that can be teleoperated remotely over Telegram. A custom trained YOLOv2 model detects target objects from the robot's webcam feed, while the OpenClaw command interpreter turns chat messages into arm movements letting a user pick and place objects from their phone while watching a live robot POV video stream.",
         bullets: [
           "Controlled six MG996R servo joints via a PCA9685 driver over I2C, with a NEMA 17 / A4988 stepper base for rotation.",
-          "Measured physical geometry and implemented a 6-link inverse kinematics approach, handling mirrored shoulder servos, servo limits, I2C addressing and calibration.",
+          "Measured physical geometry and implemented a 6 link inverse kinematics approach, handling mirrored shoulder servos, servo limits, I2C addressing and calibration.",
           "Trained a custom YOLOv2 model to detect target objects from the robot's webcam (robot-POV) feed.",
-          "Built a Telegram teleoperation layer so a user can drive the arm from their phone — a Telegram bot plus an OpenClaw command interpreter convert chat messages into arm actions.",
+          "Built a Telegram teleoperation layer so a user can drive the arm from their phone, a Telegram bot plus an OpenClaw command interpreter convert chat messages into arm actions.",
           "Added a Minimax M2.7 model in the cloud control layer to interpret natural-language user commands.",
-          "Bridged the cloud to the hardware through a Field PC acting as a serial communication bridge and webcam server, streaming live robot-POV video back to the Telegram app."
+          "Bridged the cloud to the hardware through a PC acting as a serial communication bridge and webcam server, streaming live robot POV video back to the Telegram app."
         ]
       }
     };
