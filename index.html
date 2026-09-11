@@ -1035,6 +1035,49 @@
       height: auto;
     }
 
+    /* Frame the supplied model screenshots without changing their pixels. */
+    .model-previews {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .model-frame {
+      display: block;
+      position: relative;
+      aspect-ratio: 1;
+      overflow: hidden;
+      background: #171b21;
+    }
+
+    .model-frame img,
+    .gallery-slot .model-frame img {
+      position: absolute;
+      width: 112%;
+      max-width: none;
+      height: auto;
+      left: -6%;
+      top: -10%;
+    }
+
+    .model-caption {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    [data-mode="resume"] .model-caption {
+      color: var(--doc-muted);
+    }
+
+    .gallery-slot .model-caption {
+      padding: 8px 12px 12px;
+      margin: 0;
+    }
+
     .modal-copy {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1286,7 +1329,6 @@
     [data-mode="resume"] .focus,
     [data-mode="resume"] .pane-bar,
     [data-mode="resume"] .swatch,
-    [data-mode="resume"] .case-cta,
     [data-mode="resume"] .table-label,
     [data-mode="resume"] .index-table thead,
     [data-mode="resume"] .row-toggle .marker,
@@ -1567,6 +1609,17 @@
     [data-mode="resume"] .case-body p {
       color: var(--doc-muted);
       font-size: 0.93rem;
+    }
+
+    [data-mode="resume"] .case-cta {
+      color: var(--doc-link);
+      font-family: var(--serif);
+      font-size: 0.88rem;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top-color: #c9c9c9;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     /* --- Index table becomes document entries --- */
@@ -2003,14 +2056,25 @@
             </div>
             <div class="case-body">
               <h3>Project Asphyxia</h3>
-              <p>Breath-controlled VR horror for Meta Quest 3. An MFCC + LSTM model runs inside Unity Sentis and drives monster suspicion, oxygen, toxicity and hallucination systems.</p>
+              <p>Breath-controlled VR horror for Meta Quest 3. An MFCC + LSTM model runs inside Unity Sentis and drives monster suspicion, oxygen, toxicity and hallucination systems. Created environment props and character models in Blender, including UV mapping.</p>
               <div class="stack">
                 <span class="tag">PyTorch</span>
                 <span class="tag">ONNX</span>
                 <span class="tag">Unity Sentis</span>
                 <span class="tag">C#</span>
+                <span class="tag">Blender</span>
               </div>
-              <span class="case-cta">video + visuals <span class="arrow" aria-hidden="true">→</span></span>
+              <div class="model-previews" aria-label="Blender modelling examples">
+                <span>
+                  <span class="model-frame"><img src="gameimages/character-front.png" alt="Girl character model created in Blender, front three-quarter view" loading="lazy" /></span>
+                  <span class="model-caption">Character model · Blender</span>
+                </span>
+                <span>
+                  <span class="model-frame"><img src="gameimages/wheelchair-front.png" alt="Wheelchair environment prop created in Blender, front three-quarter view" loading="lazy" /></span>
+                  <span class="model-caption">Wheelchair prop · Blender</span>
+                </span>
+              </div>
+              <span class="case-cta">View demo &amp; project details <span class="arrow" aria-hidden="true">→</span></span>
             </div>
           </button>
 
@@ -2028,7 +2092,7 @@
                 <span class="tag">OpenClaw</span>
                 <span class="tag">PCA9685</span>
               </div>
-              <span class="case-cta">video + visuals <span class="arrow" aria-hidden="true">→</span></span>
+              <span class="case-cta">View demo &amp; project details <span class="arrow" aria-hidden="true">→</span></span>
             </div>
           </button>
         </div>
@@ -2175,6 +2239,8 @@
               <span class="tag">SDL2</span>
               <span class="tag">GLM</span>
               <span class="tag">Software Rasterisation</span>
+              <span class="tag">Blender</span>
+              <span class="tag">3D Modelling</span>
             </div>
           </div>
           <div class="cfg-row">
@@ -2192,6 +2258,8 @@
             <span class="cfg-key">systems + deployment</span>
             <div class="cfg-val">
               <span class="tag">C/C++</span>
+              <span class="tag">Linux (coursework)</span>
+              <span class="tag">Shell scripting (coursework)</span>
               <span class="tag">JavaScript</span>
               <span class="tag">SQL</span>
               <span class="tag">Docker</span>
@@ -2242,11 +2310,19 @@
     const projects = {
       asphyxia: {
         title: "Project Asphyxia / Real-Time Breath Detection",
-        subtitle: "Python · PyTorch · ONNX · Unity Sentis · C# · Meta Quest 3",
+        subtitle: "Python · PyTorch · ONNX · Unity Sentis · C# · Blender · Meta Quest 3",
         videos: ["0ZBkigv2GE0", "d8DsTOz6Bpk"],
-        images: ["gameimages/scarygirl.png", "gameimages/scarymonster.png"],
+        images: [
+          { src: "gameimages/character-front.png", caption: "Character model — front view · Blender modelling and UV mapping", model: true },
+          { src: "gameimages/character-back.png", caption: "Character model — rear view", model: true },
+          { src: "gameimages/wheelchair-front.png", caption: "Wheelchair prop — front view · Blender modelling and UV mapping", model: true },
+          { src: "gameimages/wheelchair-back.png", caption: "Wheelchair prop — rear view", model: true },
+          "gameimages/scarygirl.png",
+          "gameimages/scarymonster.png"
+        ],
         overview: "Project Asphyxia is a standalone Meta Quest 3 VR horror game set in a hospital environment. The main mechanic uses real-time breath detection: if the player breathes too loudly, the monster's suspicion rises; if the player stops breathing, toxicity rises and hallucination effects begin.",
         bullets: [
+          "Created environment props and character models in Blender, including UV mapping, for the VR horror game.",
           "Designed and trained an MFCC + LSTM model to classify inhale, exhale, silence and noise.",
           "Exported the model to ONNX and ran inference in Unity using Sentis.",
           "Built monster hearing, oxygen, toxicity, hallucination, shadow scare and diegetic VR inventory systems.",
@@ -2309,7 +2385,9 @@
         modalVideos.appendChild(wrap);
       });
 
-      project.images.forEach((imagePath) => {
+      project.images.forEach((image) => {
+        const imagePath = typeof image === "string" ? image : image.src;
+        const caption = typeof image === "string" ? "" : image.caption;
         const slot = document.createElement("div");
         slot.className = "gallery-slot";
 
@@ -2321,12 +2399,19 @@
 
         const img = document.createElement("img");
         img.src = imagePath;
-        img.alt = `${project.title} image`;
+        img.alt = caption || `${project.title} image`;
         img.loading = "lazy";
         img.onerror = () => { slot.style.display = "none"; };
 
+        if (image.model) link.className = "model-frame";
         link.appendChild(img);
         slot.appendChild(link);
+        if (caption) {
+          const label = document.createElement("p");
+          label.className = "model-caption";
+          label.textContent = caption;
+          slot.appendChild(label);
+        }
         modalGallery.appendChild(slot);
       });
 
